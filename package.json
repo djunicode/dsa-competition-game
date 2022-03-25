@@ -5,6 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
+    "test": "node app.js",
     "dev": "nodemon app.js",
     "start": "node app.js"
   },
@@ -34,8 +35,5 @@
     "express": "^4.17.3",
     "passport": "^0.5.2",
     "passport-google-oauth20": "^2.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
   }
 }
