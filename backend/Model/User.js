@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'Please enter the email'],
+      required: [false, 'Please enter the email'],
       unique: [true, 'Email already taken'],
       validate(value) {
         if (!validator.isEmail(value)) {
@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [false, 'Password is required'],
     },
     contact: {
       type: Number,
