@@ -8,8 +8,23 @@ import {
 } from "@mui/material";
 import background from "../images/background.jpg";
 import { makeStyles } from "@mui/styles";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { login } from "../actions/userAction";
+
 
 export default function LoginScreen() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(login(username, password));
+  };
+
   const classes = useStyles();
   return (
     <>
@@ -42,54 +57,72 @@ export default function LoginScreen() {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Typography marginTop="2px" style={{ color: "#8985F2" }}>
+                  <Typography
+                    marginTop="2px"
+                    style={{ color: "#8985F2", fontWeight: "700" }}
+                  >
                     LOGIN
                   </Typography>
-                  <Grid
-                    conatiner
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
+                  <Box
+                    component="form"
+                    noValidate
+                    onSubmit={handleSubmit}
+                    sx={{ mt: 1 }}
                   >
-                    <label for="name" style={{color:"white"}}>Username</label>
-                    <input
-                      type="name"
-                      id="name"
-                      name="name"
-                      style={{ height: "40px", width: "300px" }}
-                    />
-                  </Grid>
-                  <Grid
-                    conatiner
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
-                  >
-                    <label for="password" style={{color:"white"}}>Password</label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      style={{ height: "40px", width: "300px" }}
-                    />
-                  </Grid>
-                  <Button
-                    variant="contained"
-                    style={{
-                      background: "#8985F2",
-                      borderRadius: "3.5px",
-                      width: "300px",
-                      height: "40px",
-                      marginTop:"20px"
-                    }}
-                  >
-                    LOGIN
-                  </Button>
-                  <Typography style={{color:"white"}}>
+                    <Grid
+                      item
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="flex-start"
+                      alignItems="flex-start"
+                    >
+                      <label htmlFor="name" style={{ color: "white" }}>
+                        Username
+                      </label>
+                      <input
+                        type="name"
+                        id="name"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        style={{ height: "40px", width: "300px" }}
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      display="flex"
+                      flexDirection="column"
+                      justifyContent="flex-start"
+                      alignItems="flex-start"
+                    >
+                      <label htmlFor="password" style={{ color: "white" }}>
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        style={{ height: "40px", width: "300px" }}
+                      />
+                    </Grid>
+                    <Button
+                      variant="contained"
+                      style={{
+                        background: "#8985F2",
+                        borderRadius: "3.5px",
+                        width: "300px",
+                        height: "40px",
+                        marginTop: "20px",
+                      }}
+                    >
+                      LOGIN
+                    </Button>
+                  </Box>
+                  <Typography style={{ color: "white" }}>
                     Don't have and account?{" "}
-                    <span style={{ color: "#8985F2" }}>Sign Up</span>
+                    <span style={{ color: "#8985F2", fontWeight: "700" }}>
+                      Sign Up
+                    </span>
                   </Typography>
                 </Grid>
               </CardContent>
