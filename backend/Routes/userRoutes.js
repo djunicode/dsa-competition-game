@@ -1,5 +1,5 @@
-const express = require('express')
-const auth = require('../Middleware/auth.js')
+const express = require('express');
+const auth = require('../Middleware/auth.js');
 const {
   registerNewUser,
   loginUser,
@@ -8,31 +8,45 @@ const {
   getProfile,
   updateUser,
   deleteUser,
-} = require('../controllers/userController.js')
+  verifySignUpOtp,
+  verifyLoginOtp,
+  forgotPassword,
+  resetPassword,
+} = require('../controllers/userController.js');
 
-const router = new express.Router()
+const router = new express.Router();
 
 //Register new user
-router.post('/register', registerNewUser)
+router.post('/register', registerNewUser);
 
 //Login User
-router.post('/login', loginUser)
+router.post('/login', loginUser);
 
 //Logout User
-router.post('/logout', auth, logoutUser)
+router.post('/logout', auth, logoutUser);
 
 //Get Personal Profile
-router.get('/me', auth, getProfile)
+router.get('/me', auth, getProfile);
 
 //update Profile
-router.put('/update', auth, updateUser)
+router.put('/update', auth, updateUser);
 
 //Delete Profile
-router.delete('/delete', auth, deleteUser)
-
+router.delete('/delete', auth, deleteUser);
 
 //Get All Users
-router.get('/get', getUsers)
+router.get('/get', getUsers);
 
+// Verify Otp-Signup
+router.post('/verifyOtp/:name/:email/:password/:contact', verifySignUpOtp);
 
-module.exports = router
+// Verify Otp-Login
+router.post('/verifyLoginOtp/:email', verifyLoginOtp);
+
+// forgot email-password
+router.post('/forgot-password', forgotPassword);
+
+// Reset Password
+router.post('/reset-password/:_id/:newToken', resetPassword);
+
+module.exports = router;

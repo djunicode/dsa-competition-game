@@ -8,13 +8,12 @@ const connectDB = async () => {
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    
   } catch (error) {
     console.error(`Mongo DB Error: ${error.message}`);
     process.exit(1);
   }
-}
+};
 
-connectDB()
+connectDB();
 
-module.exports = connectDB
+module.exports = connectDB;
