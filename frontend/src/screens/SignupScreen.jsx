@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 
@@ -16,6 +17,10 @@ const CustomTextField = (props) => {
 };
 
 const SignupScreen = () => {
+  const matchesM = useMediaQuery((theme) => theme.breakpoints.up('md'));
+  const matchesS = useMediaQuery((theme) => theme.breakpoints.up('sm'));
+
+  console.log(matchesM, matchesS);
   return (
     <Box
       sx={{
@@ -35,10 +40,12 @@ const SignupScreen = () => {
         sx={{
           backgroundColor: 'rgb(255, 255, 255, 0.1)',
           borderRadius: '7px',
-          width: '900px',
-          height: '560px',
+          width: matchesM ? '56rem' : matchesS ? '37rem' : '88%',
+          height: matchesM ? '35rem' : '42rem',
           textAlign: 'center',
           backdropFilter: 'blur(57.4px)',
+          paddingBottom: matchesM ? '' : '0.7rem',
+          margin: matchesM ? '' : '2rem 0',
         }}>
         <Typography
           variant="h1"
@@ -53,11 +60,11 @@ const SignupScreen = () => {
         <form>
           <Grid
             container
-            sx={{ mt: 2, px: 7 }}
+            sx={{ mt: 2, px: matchesS ? 7 : 1 }}
             direction="row"
             justifyContent="space-around"
             alignItems="center"
-            spacing={4}>
+            spacing={matchesM ? 4 : 2}>
             <Grid item md={6} sm={12}>
               <CustomTextField label="Username" />
             </Grid>
@@ -71,12 +78,12 @@ const SignupScreen = () => {
               <CustomTextField label="Confirm Password" />
             </Grid>
           </Grid>
-          <Box sx={{ m: 4, mb: 2 }}>
+          <Box sx={{ m: matchesS ? 4 : 2, mb: 2 }}>
             <Box
               sx={{
                 height: '4px',
                 backgroundColor: '#f1f1f1',
-                width: '6.3rem',
+                width: matchesS ? '6.3rem' : '4.5rem',
                 display: 'inline-block',
                 margin: '0 1rem 0.3rem',
                 borderRadius: '2.5px',
@@ -95,7 +102,7 @@ const SignupScreen = () => {
               sx={{
                 height: '4px',
                 backgroundColor: '#f1f1f1',
-                width: '6.3rem',
+                width: matchesS ? '6.3rem' : '4.5rem',
                 display: 'inline-block',
                 margin: '0 1rem 0.3rem',
                 borderRadius: '2.5px',
@@ -115,7 +122,7 @@ const SignupScreen = () => {
               variant="p"
               sx={{
                 margin: '1rem 0',
-                marginRight: '0.5rem',
+                marginRight: matchesS ? '0.5rem' : '0',
                 fontSize: '1rem',
               }}>
               Sign Up With
@@ -124,9 +131,10 @@ const SignupScreen = () => {
               <FcGoogle
                 style={{
                   backgroundColor: '#f1f1f1',
-                  width: '2.8rem',
-                  height: '2.8rem',
+                  width: '2.5rem',
+                  height: '2.5rem',
                   borderRadius: '3.5px',
+                  padding: '0.3rem',
                   margin: '0 0.7rem',
                 }}
               />
@@ -136,15 +144,16 @@ const SignupScreen = () => {
                 style={{
                   backgroundColor: '#f1f1f1',
                   color: 'black',
-                  width: '2.8rem',
-                  height: '2.8rem',
+                  width: '2.5rem',
+                  height: '2.5rem',
                   borderRadius: '3.5px',
                   margin: '0 0.7rem',
+                  padding: '0.3rem',
                 }}
               />
             </a>
           </Box>
-          <Box sx={{ width: '30rem', margin: '0 auto' }}>
+          <Box sx={{ width: matchesS ? '30rem' : '10rem', margin: '0 auto' }}>
             <Button
               variant="contained"
               size="large"
