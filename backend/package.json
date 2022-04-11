@@ -25,7 +25,9 @@
     "passport": "^0.5.2",
     "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
+    "swagger-ui-express": "^4.3.0",
     "twilio": "^3.76.0",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "yamljs": "^0.3.0"
   }
 }
