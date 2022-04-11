@@ -1,11 +1,11 @@
 const express = require('express');
 const passport = require('passport');
 const {
-    githubCallback,
-    isGithubLogged,
-    githubLogout,
-    githubSignin,
-    githubFailed
+  githubCallback,
+  isGithubLogged,
+  githubLogout,
+  githubSignin,
+  githubFailed,
 } = require('../Controllers/githubAuthController');
 const { githubAuth } = require('../Middleware/githubAuthMiddleware');
 const router = express.Router();
