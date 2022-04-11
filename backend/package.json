@@ -23,6 +23,7 @@
     "nodemailer": "^6.7.3",
     "nodemon": "^2.0.15",
     "passport": "^0.5.2",
+    "passport-github": "^1.1.0",
     "passport-google-oauth20": "^2.0.0",
     "twilio": "^3.76.0",
     "validator": "^13.7.0"

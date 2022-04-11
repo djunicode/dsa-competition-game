@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema(
     email: {
       // unique: [true, 'Email already taken'],
       type: String,
-      required: [true, 'Please enter the email'],
+      required: [false, 'Please enter the email'],
       validate(value) {
         if (!validator.isEmail(value)) {
           throw new Error('email is invalid');
@@ -22,7 +22,7 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: [false, 'Password is required'],
     },
     contact: {
       // unique: [true, 'Mobile no already registered, try logging in'],
