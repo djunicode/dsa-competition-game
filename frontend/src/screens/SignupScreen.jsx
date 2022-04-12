@@ -1,22 +1,45 @@
 import React from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useForm, Controller } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 
-const CustomTextField = (props) => {
-  return (
-    <TextField
-      variant="outlined"
-      fullWidth
-      color="primary"
-      sx={{}}
-      {...props}
-    />
-  );
-};
+import { register } from '../actions/userActions';
 
 const SignupScreen = () => {
+  const {
+    handleSubmit,
+    formState: { errors, touchedFields },
+    control,
+    getValues,
+  } = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
+
+  const dispatch = useDispatch();
+
+  const userRegister = useSelector((state) => state.userRegister);
+  const { loading, error, userInfo } = userRegister;
+
+  console.log(errors);
+  console.log(`touchedFields: ${touchedFields.username}`);
+
+  const onSubmit = (data) =>
+    dispatch(
+      register(
+        getValues('username'),
+        getValues('email'),
+        getValues('password'),
+      ),
+    );
+
   const matchesM = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const matchesS = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 
@@ -41,7 +64,7 @@ const SignupScreen = () => {
           backgroundColor: 'rgb(255, 255, 255, 0.1)',
           borderRadius: '7px',
           width: matchesM ? '56rem' : matchesS ? '37rem' : '88%',
-          height: matchesM ? '35rem' : '42rem',
+          height: matchesM ? '38rem' : '42rem',
           textAlign: 'center',
           backdropFilter: 'blur(57.4px)',
           paddingBottom: matchesM ? '' : '0.7rem',
@@ -57,7 +80,7 @@ const SignupScreen = () => {
           }}>
           SIGNUP
         </Typography>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Grid
             container
             sx={{ mt: 2, px: matchesS ? 7 : 1 }}
@@ -66,16 +89,94 @@ const SignupScreen = () => {
             alignItems="center"
             spacing={matchesM ? 4 : 2}>
             <Grid item md={6} sm={12}>
-              <CustomTextField label="Username" />
+              <Controller
+                name="username"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    label="Username"
+                    id="username"
+                    autoFocus="true"
+                    error={errors.username}
+                    helperText={errors.username ? 'Username is required' : ' '}
+                    {...field}
+                  />
+                )}
+              />
             </Grid>
             <Grid item md={6} sm={12}>
-              <CustomTextField label="Email" />
+              <Controller
+                name="email"
+                control={control}
+                rules={{
+                  required: true,
+                  pattern: /\S+@\S+\.\S+/,
+                }}
+                render={({ field }) => (
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    label="Email"
+                    id="email"
+                    error={errors.email}
+                    helperText={errors.email ? 'Enter a valid email' : ' '}
+                    {...field}
+                  />
+                )}
+              />
             </Grid>
             <Grid item md={6} sm={12}>
-              <CustomTextField label="Password" />
+              <Controller
+                name="password"
+                control={control}
+                rules={{ required: true, minLength: 6 }}
+                render={({ field }) => (
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    label="Password"
+                    id="password"
+                    type="password"
+                    error={errors.password}
+                    helperText={
+                      errors.password ? 'Enter a valid 6 digit password' : ' '
+                    }
+                    {...field}
+                  />
+                )}
+              />
             </Grid>
             <Grid item md={6} sm={12}>
-              <CustomTextField label="Confirm Password" />
+              <Controller
+                name="confirmPassword"
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    label="Confirm Password"
+                    id="confirmPassword"
+                    type="password"
+                    error={
+                      getValues('password') !== getValues('confirmPassword')
+                    }
+                    helperText={
+                      getValues('password') !== getValues('confirmPassword')
+                        ? 'Both passwords do not match!'
+                        : ' '
+                    }
+                    {...field}
+                  />
+                )}
+              />
             </Grid>
           </Grid>
           <Box sx={{ m: matchesS ? 4 : 2, mb: 2 }}>
@@ -159,6 +260,7 @@ const SignupScreen = () => {
               size="large"
               color="primary"
               fullWidth
+              type="submit"
               style={{ fontSize: '1.3rem', fontWeigth: '600' }}>
               Sign Up
             </Button>
