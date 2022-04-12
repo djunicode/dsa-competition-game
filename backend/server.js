@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerJsDocs = YAML.load('./api.yaml');
 const cookieSession = require('cookie-session');
 require('./Model/passport');
 require('./config/db');
@@ -19,6 +22,7 @@ app.use(express.json());
 app.use(oauthRoutes);
 app.use('/api/user', githubAuthRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDocs));
 
 const port = process.env.PORT || 5000;
 
