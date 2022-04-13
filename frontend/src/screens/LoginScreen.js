@@ -15,16 +15,20 @@ import { login } from "../actions/userAction";
 
 
 export default function LoginScreen() {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo } = userLogin;
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login(username, password));
-  };
+    dispatch(login(name, password));
 
+  };
+   
   const classes = useStyles();
   return (
     <>
@@ -82,8 +86,8 @@ export default function LoginScreen() {
                       <input
                         type="name"
                         id="name"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         style={{ height: "40px", width: "300px" }}
                       />
                     </Grid>
@@ -106,6 +110,7 @@ export default function LoginScreen() {
                       />
                     </Grid>
                     <Button
+                    type="submit"
                       variant="contained"
                       style={{
                         background: "#8985F2",

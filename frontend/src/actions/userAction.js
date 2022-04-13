@@ -1,41 +1,71 @@
+import axios from "axios";
+import localforage from "localforage";
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-  } from "../constants/userConstants";
-  import axios from "axios";
+  USER_LOGIN_FAIL,
+  USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS,
+} from "../constants/userConstants";
 
-export const login = (username, password) => async (dispatch) => {
-    try {
-      dispatch({
-        type: USER_LOGIN_REQUEST,
-      });
-  
-      const config = {
+//const url = 'http://localhost:5000/graphql';
+
+export const login = (name, password) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_LOGIN_REQUEST,
+    });
+
+    const data = await axios.post(
+      //url,
+      {
+        query: `
+        query {
+          authUser(email: "${name}", password: "${password}"){
+            _id
+            name
+            token
+          }
+        }
+      `,
+      },
+      {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-      };
-  
-      const { data } = await axios.post(
-        // '/api/users/login',
-        { username, password },
-        config,
-      );
-  
-      dispatch({
-        type: USER_LOGIN_SUCCESS,
-        payload: data,
+      }
+    );
+
+    const reconstructedData = {
+      _id: data.data.data.authUser._id,
+      name: data.data.data.authUser.name,
+      token: data.data.data.authUser.token,
+    };
+
+    console.log(reconstructedData);
+
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: reconstructedData,
+    });
+
+    localStorage.setItem("userInfo", JSON.stringify(reconstructedData));
+
+    localforage.setDriver([localforage.INDEXEDDB]);
+    localforage.setItem("userInfo", JSON.stringify(reconstructedData));
+    localforage
+      .getItem("userInfo")
+      .then((value) => {
+        console.log(value);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-  
-      localStorage.setItem('userInfo', JSON.stringify(data));
-    } catch (error) {
-      dispatch({
-        type: USER_LOGIN_FAIL,
-        payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
-      });
-    }
-  };
+  } catch (error) {
+    dispatch({
+      type: USER_LOGIN_FAIL,
+      payload:
+        error.response && error.response.data.errors[0].message
+          ? error.response.data.errors[0].message
+          : error.message,
+    });
+  }
+};
