@@ -1,4 +1,4 @@
-const passport = require('passport');
+import passport from 'passport';
 
 const githubSignin = passport.authenticate('github');
 
@@ -38,7 +38,7 @@ const githubFailed = (req, res) => {
   });
 };
 
-module.exports = {
+export {
   githubSignin,
   githubCallback,
   isGithubLogged,

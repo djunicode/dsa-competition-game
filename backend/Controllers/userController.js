@@ -1,64 +1,24 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../Model/User.js');
-require('dotenv').config();
-const Mailing = require('../Mailing/gmail.js');
-const client = require('twilio')(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+import jwt from 'jsonwebtoken';
+const { sign, verify } = jwt;
+import bcrypt from 'bcryptjs';
+const { hash } = bcrypt;
+import User from '../Model/User.js';
+import dotenv from 'dotenv';
+dotenv.config();
+import Mail from '../Mailing/gmail.js';
 
 //Register a user
 const registerNewUser = async (req, res) => {
   try {
-    client.verify
-      .services(process.env.TWILIO_SERVICE_ID)
-      .verifications.create({
-        to: '+91' + req.body.contact,
-        channel: 'sms',
-      })
-      .then((data) => {
-        if (data.status == 'pending') {
-          res.status(200).json('Plz verify the Otp sent to the phone no');
-        }
-      });
-  } catch (e) {
-    res.status(400).json({
-      success: false,
-      message: e.message,
-    });
-  }
-};
-
-// Signup Otp Verification
-
-const verifySignUpOtp = async (req, res) => {
-  try {
-    const user = new User({
-      name: req.params.name,
-      email: req.params.email,
-      password: req.params.password,
-      contact: req.params.contact,
-    });
+    console.log(req.body);
+    const user = new User({ ...req.body });
     const token = await user.generateAuthToken();
-    client.verify
-      .services(process.env.TWILIO_SERVICE_ID)
-      .verificationChecks.create({
-        to: '+91' + req.params.contact,
-        code: req.body.code,
-      })
-      .then((data) => {
-        if (data.status == 'approved') {
-          user.save();
-          res.status(200).json({
-            success: true,
-            token,
-            message: 'User registered succesfully',
-          });
-        } else {
-          res.status(400).json('Plz enter valid Otp');
-        }
-      });
+    console.log(user);
+    await user.save();
+    res.status(201).json({
+      success: true,
+      data: token,
+    });
   } catch (e) {
     res.status(400).json({
       success: false,
@@ -74,62 +34,15 @@ const loginUser = async (req, res) => {
       req.body.email,
       req.body.password
     );
-    if (!user) {
-      res
-        .status(400)
-        .json({ success: false, message: 'Invalid Login Credentials' });
-    }
-    client.verify
-      .services(process.env.TWILIO_SERVICE_ID)
-      .verifications.create({
-        to: '+91' + user.contact,
-        channel: 'sms',
-      })
-      .then((data) => {
-        if (data.status == 'pending') {
-          res
-            .status(200)
-            .json('Plz verify the Otp sent to your registered phone no');
-        }
-      });
-    // const token = await user.generateAuthToken();
-    // res.status(200).json({
-    //   success: true,
-    //   data: token,
-    // });
+    const token = await user.generateAuthToken();
+    res.status(200).json({
+      success: true,
+      data: token,
+    });
   } catch (e) {
     res.status(400).json({
       success: false,
       message: e.message,
-    });
-  }
-};
-
-const verifyLoginOtp = async (req, res) => {
-  try {
-    const user = await User.findOne({ email: req.params.email });
-    const token = await user.generateAuthToken();
-    client.verify
-      .services(process.env.TWILIO_SERVICE_ID)
-      .verificationChecks.create({
-        to: '+91' + user.contact,
-        code: req.body.code,
-      })
-      .then((data) => {
-        if (data.status == 'approved') {
-          res.status(200).json({
-            success: true,
-            token,
-            message: 'Welcome back to dsa-Competition game',
-          });
-        } else {
-          res.status(400).json('Plz enter valid Otp');
-        }
-      });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
     });
   }
 };
@@ -255,9 +168,9 @@ const forgotPassword = async (req, res) => {
       email: user.email,
       id: user._id,
     };
-    const newToken = jwt.sign(payload, secret, { expiresIn: '15m' });
+    const newToken = sign(payload, secret, { expiresIn: '15m' });
     const link = `http://localhost:5000/api/user/reset-password/${user._id}/${newToken}`;
-    await Mailing.Mail({
+    await Mail({
       from: process.env.EMAIL,
       to: req.body.email,
       subject: 'dsa-competition game',
@@ -293,7 +206,7 @@ const resetPassword = async (req, res) => {
       });
     }
     const secret = process.env.SECRET_KEY + user.password;
-    const payload = jwt.verify(newToken, secret);
+    const payload = verify(newToken, secret);
     const newPassword = {
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,
@@ -307,7 +220,7 @@ const resetPassword = async (req, res) => {
     }
     const updatePass = await User.updateOne(
       user,
-      { $set: { password: await bcrypt.hash(newPassword.password, 8) } },
+      { $set: { password: await hash(newPassword.password, 8) } },
       { omitUndefined: 1 }
     );
     res.status(201).json({
@@ -322,7 +235,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   registerNewUser,
   loginUser,
   logoutUser,
@@ -330,8 +243,6 @@ module.exports = {
   getProfile,
   updateUser,
   deleteUser,
-  verifySignUpOtp,
-  verifyLoginOtp,
   forgotPassword,
   resetPassword,
 };

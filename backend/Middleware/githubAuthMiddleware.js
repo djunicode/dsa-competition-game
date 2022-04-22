@@ -1,10 +1,8 @@
-const express = require('express');
-const passport = require('passport');
+import express from 'express';
+import passport from 'passport';
 
 const githubAuth = passport.authenticate('github', {
   failureRedirect: '/api/user/githubFailed',
 });
 
-module.exports = {
-  githubAuth,
-};
+export { githubAuth };

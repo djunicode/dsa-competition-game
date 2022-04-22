@@ -1,17 +1,19 @@
-require('dotenv').config();
-const express = require('express');
-const passport = require('passport');
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerJsDocs = YAML.load('./api.yaml');
-const cookieSession = require('cookie-session');
-require('./Model/passport');
-require('./config/db');
-require('./config/githubAuthConfig');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import passport from 'passport';
+import { serve, setup } from 'swagger-ui-express';
+import yaml from 'yamljs';
+const swaggerJsDocs = yaml.load('./api.yaml');
+import cookieSession from 'cookie-session';
+import './Model/passport.js';
+import './config/db.js';
+import './config/githubAuthConfig.js';
 
-const oauthRoutes = require('./Routes/oauthRoutes');
-const githubAuthRoutes = require('./Routes/githubAuthRoutes');
-const userRoutes = require('./Routes/userRoutes');
+import oauthRoutes from './Routes/oauthRoutes.js';
+import githubAuthRoutes from './Routes/githubAuthRoutes.js';
+import userRoutes from './Routes/userRoutes.js';
+import codeRoutes from './Routes/codeRoutes.js';
 
 const app = express();
 app.use(cookieSession({ name: 'auth-session', keys: ['key1', 'key2'] }));
@@ -22,10 +24,13 @@ app.use(express.json());
 app.use(oauthRoutes);
 app.use('/api/user', githubAuthRoutes);
 app.use('/api/user', userRoutes);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDocs));
+app.use('/code', codeRoutes);
+app.use('/api-docs', serve, setup(swaggerJsDocs));
 
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log(`Server is up and running at port ${port}`);
+  console.log(
+    `Server is up and running at port ${port}\nURL: http://localhost:${port}/`
+  );
 });

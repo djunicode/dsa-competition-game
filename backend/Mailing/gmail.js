@@ -1,10 +1,11 @@
-const nodemailer = require('nodemailer');
-const fs = require('fs');
-const ejs = require('ejs');
-const juice = require('juice');
-require('dotenv').config();
+import { createTransport } from 'nodemailer';
+import { existsSync, readFileSync } from 'fs';
+import { render } from 'ejs';
+import juice from 'juice';
+import dotenv from 'dotenv';
+dotenv.config();
 
-let transporter = nodemailer.createTransport({
+let transporter = createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL,
@@ -22,13 +23,13 @@ const Mail = async ({
     ...restOfOptions,
   };
 
-  if (templateName && fs.existsSync(templatePath)) {
-    const template = fs.readFileSync(templatePath, 'utf-8');
-    const html = ejs.render(template, templateVars);
+  if (templateName && existsSync(templatePath)) {
+    const template = readFileSync(templatePath, 'utf-8');
+    const html = render(template, templateVars);
     const htmlWithStylesInlined = juice(html);
     options.html = htmlWithStylesInlined;
   }
   return transporter.sendMail(options);
 };
 
-module.exports = { Mail };
+export default Mail;

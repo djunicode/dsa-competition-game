@@ -1,5 +1,3 @@
-const express = require('express');
-
 const googleCallback = (req, res) => {
   console.log(req.user);
   res.redirect('/googleSuccess');
@@ -19,9 +17,4 @@ const googleSuccess = (req, res) => {
   res.send(`Welcome ${req.user.displayName}`);
 };
 
-module.exports = {
-  googleCallback,
-  googleLogout,
-  googleFailed,
-  googleSuccess,
-};
+export { googleCallback, googleLogout, googleFailed, googleSuccess };
