@@ -14,7 +14,22 @@ const registerNewUser = async (req, res) => {
     const user = new User({ ...req.body });
     const token = await user.generateAuthToken();
     console.log(user);
-    await user.save();
+    await user.save((err) => {
+      if (err) {
+        if (err.name === 'MongoError' && err.code === 11000) {
+          // Duplicate username
+          return res
+            .status(422)
+            .json({ success: false, message: 'User already exist!' });
+        }
+        // Some other error
+        return res.status(422).send(err);
+      }
+
+      res.json({
+        success: true,
+      });
+    });
     res.status(201).json({
       success: true,
       data: token,
