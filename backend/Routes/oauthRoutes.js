@@ -12,10 +12,6 @@ import {
 } from '../Middleware/oauthMiddleware.js';
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'You are not logged in' });
-});
-
 router.get('/googleFailed', googleFailed);
 router.get('/googleSuccess', isGoogleLogged, googleSuccess);
 router.get('/google', googleLogin);
