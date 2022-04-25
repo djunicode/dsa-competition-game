@@ -2,17 +2,22 @@ import React from 'react';
 import { Dialog, Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import PeopleIcon from '@mui/icons-material/People';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import { BsPersonCircle } from 'react-icons/bs';
+import { FaChevronRight } from 'react-icons/fa';
 
 export default function JoinRoomModal() {
+  // Dummy Participants
+  const players = ['User 1', 'Player 2', 'Player 3'];
+
   return (
     <Dialog
       open
+      BackdropProps={{ style: { backgroundColor: 'unset' } }}
       sx={{
-        backdropFilter: 'blur(8px)',
+        backdropFilter: 'blur(10px)',
       }}
       PaperProps={{
         sx: {
@@ -53,7 +58,7 @@ export default function JoinRoomModal() {
                 sx={{
                   display: 'flex',
                   paddingLeft: '30px',
-                  fontSize: '16px',
+                  fontSize: '18px',
                 }}
               >
                 <Box
@@ -61,20 +66,24 @@ export default function JoinRoomModal() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginRight: '5px',
+                    marginRight: '7px',
+                    paddingBottom: '3px',
+                    fontSize: '22px',
                   }}
                 >
-                  <AccountCircleIcon />
+                  <BsPersonCircle />
                 </Box>
                 Host: Meet Patel
               </Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography
+                variant="body1"
+                component="text"
                 sx={{
                   display: 'flex',
                   paddingLeft: '150px',
-                  fontSize: '18px',
+                  fontSize: '17.5px',
                 }}
               >
                 7/10
@@ -83,7 +92,7 @@ export default function JoinRoomModal() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginLeft: '5px',
+                    marginLeft: '7px',
                   }}
                 >
                   <PeopleIcon />
@@ -92,9 +101,12 @@ export default function JoinRoomModal() {
             </Grid>
             <Grid item xs={6}>
               <Typography
+                variant="body1"
+                component="text"
                 align="left"
                 sx={{
                   paddingLeft: '60px',
+                  fontSize: '17.5px',
                 }}
               >
                 Rounds: 10
@@ -102,8 +114,11 @@ export default function JoinRoomModal() {
             </Grid>
             <Grid item xs={6}>
               <Typography
+                variant="body1"
+                component="text"
                 sx={{
                   paddingLeft: '100px',
+                  fontSize: '17.5px',
                 }}
               >
                 Difficulty: Easy
@@ -122,9 +137,9 @@ export default function JoinRoomModal() {
         <Typography
           sx={{
             marginLeft: '35px',
-            marginTop: '5px',
+            marginTop: '7px',
             marginBottom: '2px',
-            fontSize: '17px',
+            fontSize: '17.5px',
           }}
         >
           Players
@@ -136,7 +151,7 @@ export default function JoinRoomModal() {
             justifyContent="space-around"
             alignItems="center"
           >
-            {/* {players.map((player) => {   //For future use
+            {players.map((player) => {
               return (
                 <Grid item xs={3}>
                   <Box
@@ -149,15 +164,18 @@ export default function JoinRoomModal() {
                     <Avatar
                       sx={{
                         fontSize: '15px',
+                        fontWeight: '300',
                         bgcolor: '#7879F1',
                         color: '#000000',
-                        border: '1px solid #000',
-                        height: '25%',
-                        width: '12%',
-                        lineHeight: '1.1',
+                        border: '1.22890px solid #000',
+                        height: '20.91px',
+                        width: '20.91px',
+                        lineHeight: '33px',
+                        boxSizing: 'border-box',
+                        paddingX: '1px',
                       }}
                     >
-                      {player.name.charAt(0).toUpperCase()}
+                      {player.charAt(0).toUpperCase()}
                     </Avatar>
                     <Typography
                       sx={{
@@ -165,113 +183,22 @@ export default function JoinRoomModal() {
                         fontSize: '14px',
                       }}
                     >
-                      {player.name}
+                      {player}
                     </Typography>
                   </Box>
                 </Grid>
               );
-            })} */}
-            <Grid item xs={3}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Avatar
-                  sx={{
-                    fontSize: '15px',
-                    bgcolor: '#7879F1',
-                    color: '#000000',
-                    border: '1px solid #000',
-                    height: '25%',
-                    width: '12%',
-                    lineHeight: '1.1',
-                  }}
-                >
-                  U
-                </Avatar>
-                <Typography
-                  sx={{
-                    marginLeft: '5px',
-                    fontSize: '14px',
-                  }}
-                >
-                  User 1
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Avatar
-                  sx={{
-                    fontSize: '15px',
-                    bgcolor: '#7879F1',
-                    color: '#000000',
-                    border: '1px solid #000',
-                    height: '25%',
-                    width: '12%',
-                    lineHeight: '1.1',
-                  }}
-                >
-                  U
-                </Avatar>
-                <Typography
-                  sx={{
-                    marginLeft: '5px',
-                    fontSize: '14px',
-                  }}
-                >
-                  User 2
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={3}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Avatar
-                  sx={{
-                    fontSize: '15px',
-                    bgcolor: '#7879F1',
-                    color: '#000000',
-                    border: '1px solid #000',
-                    height: '25%',
-                    width: '12%',
-                    lineHeight: '1.1',
-                  }}
-                >
-                  U
-                </Avatar>
-                <Typography
-                  sx={{
-                    marginLeft: '5px',
-                    fontSize: '14px',
-                  }}
-                >
-                  User 3
-                </Typography>
-              </Box>
-            </Grid>
+            })}
             <Grid item xs={3}>
               <Button
                 size="small"
                 sx={{
+                  textTransform: 'none',
+                  width: '60%',
                   color: '#000',
                   border: ' 1px solid #000',
-                  fontSize: '10px',
-                  lineHeight: '1',
+                  fontSize: '12px',
+                  lineHeight: '12px',
                   letterSpacing: '0.5px',
                   marginLeft: '15px',
                 }}
@@ -286,7 +213,7 @@ export default function JoinRoomModal() {
             marginLeft: '35px',
             marginTop: '15px',
             marginBottom: '1px',
-            fontSize: '17px',
+            fontSize: '17.5px',
           }}
         >
           Additional Info:
@@ -318,24 +245,47 @@ export default function JoinRoomModal() {
         >
           <Button
             sx={{
+              textTransform: 'none',
+              fontSize: '17px',
+              lineHeight: '22px',
               color: '#8985F2',
-              border: '1px solid  rgba(137, 133, 242, 0.85)',
+              border: '1px solid ',
+              fontWeight: '600',
+              borderColor:
+                'linear-gradient(90deg, #AF49FF 90%, #8985F2 100%)',
               width: '30%',
               marginRight: '15px',
+              borderRadius: '5px',
             }}
           >
             Cancel
           </Button>
           <Button
             sx={{
+              textTransform: 'none',
+              fontSize: '17px',
+              lineHeight: '22px',
+              fontWeight: '600',
               background:
                 'linear-gradient(90deg, rgba(131, 85, 227, 0.85) 0%, rgba(137, 133, 242, 0.85) 100%)',
               color: '#fff',
-              width: '30%',
+              width: '28%',
               marginLeft: '15px',
+              paddingLeft: '15px',
+              borderRadius: '5px',
             }}
           >
             Join Room
+            <Box
+              sx={{
+                display: 'flex',
+                color: 'rgba(69, 68, 135, 0.99)',
+                fontSize: '20px',
+                marginLeft: '10px',
+              }}
+            >
+              <FaChevronRight />
+            </Box>
           </Button>
         </Box>
       </Box>
