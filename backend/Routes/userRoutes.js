@@ -1,6 +1,6 @@
-const express = require('express');
-const auth = require('../Middleware/auth.js');
-const {
+import { Router } from 'express';
+import auth from '../Middleware/auth.js';
+import {
   registerNewUser,
   loginUser,
   logoutUser,
@@ -8,13 +8,11 @@ const {
   getProfile,
   updateUser,
   deleteUser,
-  verifySignUpOtp,
-  verifyLoginOtp,
   forgotPassword,
   resetPassword,
-} = require('../controllers/userController.js');
+} from '../Controllers/userController.js';
 
-const router = new express.Router();
+const router = new Router();
 
 //Register new user
 router.post('/register', registerNewUser);
@@ -37,16 +35,10 @@ router.delete('/delete', auth, deleteUser);
 //Get All Users
 router.get('/get', getUsers);
 
-// Verify Otp-Signup
-router.post('/verifyOtp/:name/:email/:password/:contact', verifySignUpOtp);
-
-// Verify Otp-Login
-router.post('/verifyLoginOtp/:email', verifyLoginOtp);
-
 // forgot email-password
 router.post('/forgot-password', forgotPassword);
 
 // Reset Password
 router.post('/reset-password/:_id/:newToken', resetPassword);
 
-module.exports = router;
+export default router;

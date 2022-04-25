@@ -1,35 +1,35 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+import pkg from 'mongoose';
+const { Schema, model } = pkg;
 
-const userSchema = mongoose.Schema(
+import validator from 'validator';
+const { isEmail } = validator;
+
+import bcrypt from 'bcryptjs';
+const { compare, hash } = bcrypt;
+import jwt from 'jsonwebtoken';
+const { sign } = jwt;
+
+const userSchema = Schema(
   {
-    name: {
-      // unique: [true, 'UserName already taken'],
+    username: {
       type: String,
       required: [true, 'Please enter your name'],
+      unique: true,
+      dropDups: true,
     },
     email: {
-      // unique: [true, 'Email already taken'],
+      unique: [true, 'Email already taken'],
       type: String,
-      required: [false, 'Please enter the email'],
+      required: [true, 'Please enter the email'],
       validate(value) {
-        if (!validator.isEmail(value)) {
+        if (!isEmail(value)) {
           throw new Error('email is invalid');
         }
       },
     },
     password: {
       type: String,
-      required: [false, 'Password is required'],
-    },
-    contact: {
-      // unique: [true, 'Mobile no already registered, try logging in'],
-      type: Number,
-      minLength: 10,
-      maxLength: 10,
-      required: [true, 'Please provide a contact number'],
+      // required: [true, 'Password is required'],
     },
     // role: {
     //   type: String,
@@ -46,11 +46,9 @@ const userSchema = mongoose.Schema(
 
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign(
-    { _id: user.id.toString() },
-    process.env.TOKEN_SECRET,
-    { expiresIn: '365d' }
-  );
+  const token = sign({ _id: user.id.toString() }, process.env.TOKEN_SECRET, {
+    expiresIn: '365d',
+  });
 
   //user.tokens = user.tokens.concat({token})
 
@@ -67,7 +65,7 @@ userSchema.statics.findByCredentials = async function (email, password) {
     throw new Error('Unable to login');
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await compare(password, user.password);
 
   if (!isMatch) {
     throw new Error('Unable to login');
@@ -82,9 +80,9 @@ userSchema.pre('save', async function (next) {
 
   //only want to hash the password if the user modifies the password, if it is already hashed, then it shouldn't get hashed again
   if (user.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 8);
+    user.password = await hash(user.password, 8);
   }
 });
 
-const User = mongoose.model('User', userSchema);
-module.exports = User;
+const User = model('User', userSchema);
+export default User;

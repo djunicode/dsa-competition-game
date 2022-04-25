@@ -1,7 +1,8 @@
-const passport = require('passport');
-const GitHubStrategy = require('passport-github').Strategy;
-require('dotenv').config();
-const User = require('../Model/User');
+import passport from 'passport';
+import { Strategy as GitHubStrategy } from 'passport-github';
+import dotenv from 'dotenv';
+dotenv.config();
+import User from '../Model/User.js';
 
 passport.serializeUser(function (user, cb) {
   cb(null, user);

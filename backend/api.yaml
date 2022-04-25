@@ -8,7 +8,7 @@ info:
     servers:
       -url: 'http://localhost:5000'
       description: "This is the local server to work upon"
-      -url: "http://pending"
+      -url: "https://dsa-competition-app.herokuapp.com/"
       description: "This is the officially hosted site"
 
 schemes: [http]
