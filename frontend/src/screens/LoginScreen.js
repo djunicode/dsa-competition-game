@@ -25,7 +25,9 @@ export default function LoginScreen() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(name, password)
     dispatch(login(name, password));
+  
 
   };
    

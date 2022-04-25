@@ -6,7 +6,7 @@ import {
   USER_LOGIN_SUCCESS,
 } from "../constants/userConstants";
 
-//const url = 'http://localhost:5000/graphql';
+const url = 'https://murmuring-beach-90278.herokuapp.com/login';
 
 export const login = (name, password) => async (dispatch) => {
   try {
@@ -15,7 +15,7 @@ export const login = (name, password) => async (dispatch) => {
     });
 
     const data = await axios.post(
-      //url,
+      url,
       {
         query: `
         query {
