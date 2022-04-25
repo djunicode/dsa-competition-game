@@ -1,15 +1,28 @@
+require('dotenv').config();
 const express = require('express');
 const passport = require('passport');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerJsDocs = YAML.load('./api.yaml');
 const cookieSession = require('cookie-session');
 require('./Model/passport');
+require('./config/db');
+require('./config/githubAuthConfig');
+
 const oauthRoutes = require('./Routes/oauthRoutes');
+const githubAuthRoutes = require('./Routes/githubAuthRoutes');
+const userRoutes = require('./Routes/userRoutes');
 
 const app = express();
-app.use(cookieSession({ name: 'google-auth-session', keys: ['key1', 'key2'] }));
+app.use(cookieSession({ name: 'auth-session', keys: ['key1', 'key2'] }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.json());
 
 app.use(oauthRoutes);
+app.use('/api/user', githubAuthRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDocs));
 
 const port = process.env.PORT || 5000;
 
