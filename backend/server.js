@@ -26,6 +26,7 @@ app.use(
     origin: '*',
   })
 );
+app.use(express.urlencoded({ extended: false }));
 
 app.use(oauthRoutes);
 app.use('/api/user', githubAuthRoutes);
