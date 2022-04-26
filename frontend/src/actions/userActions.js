@@ -1,6 +1,7 @@
 import axios from 'axios';
+axios.defaults.baseURL = 'http://dsa-competition-app.herokuapp.com/';
 
-export const register = (name, email, password) => async (dispatch) => {
+export const register = (username, email, password) => async (dispatch) => {
   try {
     dispatch({
       type: 'USER_REGISTER_REQUEST',
@@ -13,18 +14,13 @@ export const register = (name, email, password) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      '/api/users',
-      { name, email, password },
+      '/api/user/register',
+      { username, email, password },
       config,
     );
 
     dispatch({
       type: 'USER_REGISTER_SUCCESS',
-      payload: data,
-    });
-
-    dispatch({
-      type: 'USER_LOGIN_SUCCESS',
       payload: data,
     });
 

@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
+
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 import { register } from '../actions/userActions';
 
@@ -27,7 +30,24 @@ const SignupScreen = () => {
 
   const userRegister = useSelector((state) => state.userRegister);
   const { loading, error, userInfo } = userRegister;
+  console.log(error);
 
+  const [snackBools, setSnackBools] = useState({
+    successOpen: false,
+    errorOpen: false,
+  });
+  const handleSuccessClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBools({ ...snackBools, successOpen: false });
+  };
+  const handleErorrClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBools({ ...snackBools, errorOpen: false });
+  };
   console.log(errors);
   console.log(`touchedFields: ${touchedFields.username}`);
 
@@ -39,6 +59,15 @@ const SignupScreen = () => {
         getValues('password'),
       ),
     );
+
+  useEffect(() => {
+    if (error ? true : false) {
+      setSnackBools({ ...snackBools, errorOpen: true });
+    }
+    if (userInfo ? true : false) {
+      setSnackBools({ ...snackBools, successOpen: true });
+    }
+  }, [error, userInfo]);
 
   const matchesM = useMediaQuery((theme) => theme.breakpoints.up('md'));
   const matchesS = useMediaQuery((theme) => theme.breakpoints.up('sm'));
@@ -284,6 +313,28 @@ const SignupScreen = () => {
           </a>
         </Typography>
       </Box>
+      <Snackbar
+        open={snackBools.successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}>
+        <MuiAlert
+          severity="success"
+          sx={{ width: '100%' }}
+          onClose={handleSuccessClose}>
+          User successfully registered!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={snackBools.errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErorrClose}>
+        <MuiAlert
+          severity="error"
+          sx={{ width: '100%' }}
+          onClose={handleErorrClose}>
+          {error}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
