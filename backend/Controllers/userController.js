@@ -10,30 +10,28 @@ import Mail from '../Mailing/gmail.js';
 //Register a user
 const registerNewUser = async (req, res) => {
   try {
-    console.log(req.body);
-    const user = new User({ ...req.body });
-    const token = await user.generateAuthToken();
-    console.log(user);
-    await user.save((err) => {
-      if (err) {
-        if (err.name === 'MongoError' && err.code === 11000) {
-          // Duplicate username
-          return res
-            .status(422)
-            .json({ success: false, message: 'User already exist!' });
-        }
-        // Some other error
-        return res.status(422).send(err);
-      }
-
-      res.json({
-        success: true,
+    const findUser = await User.findOne({ email: req.body.email });
+    const findUserName = await User.findOne({ username: req.body.username });
+    if (findUser) {
+      res.status(409).json({
+        success: false,
+        messsage: 'Email already exists,try signing In!',
       });
-    });
-    res.status(201).json({
-      success: true,
-      data: token,
-    });
+    } else if (findUserName) {
+      res.status(409).json({
+        success: false,
+        messsage: 'UserName already Taken',
+      });
+    } else {
+      const user = new User({ ...req.body });
+      const token = await user.generateAuthToken();
+      await user.save();
+      res.status(200).json({
+        success: true,
+        data: token,
+        message: 'User successfully registered',
+      });
+    }
   } catch (e) {
     res.status(400).json({
       success: false,
@@ -113,36 +111,43 @@ const getProfile = async (req, res) => {
 
 //Update user details
 const updateUser = async (req, res) => {
-  const updates = Object.keys(req.body);
-  const allowedUpdates = ['name', 'email', 'password', 'contact'];
-  const isValidOperation = updates.every((update) =>
-    allowedUpdates.includes(update)
-  );
-
-  if (!isValidOperation) {
-    return res.status(400).send({ error: 'invalid Updates' });
-  }
   if (!req.user) {
     return res.status(401).json({
       success: false,
       message: 'Please login',
     });
   }
-
   try {
-    updates.forEach((update) => (req.user[update] = req.body[update]));
-
-    req.user.save();
-
-    res.status(200).json({
-      success: true,
-      data: req.user,
-    });
-  } catch (e) {
+    const user = User.findOne(req.user.username);
+    const updateData = {
+      ...req.body,
+      password: req.body.password
+        ? await bcrypt.hash(req.body.password, 8)
+        : req.body.password,
+    };
+    const found = await User.updateOne(
+      user,
+      { $set: updateData },
+      { omitUndefined: 1 }
+    );
+    if (!found) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    } else {
+      res.status(201).json({
+        success: true,
+        message: 'User updated sucessfully',
+        updateData,
+      });
+    }
+  } catch (error) {
     res.status(400).json({
       success: false,
-      message: e.message,
+      message: error.message,
     });
+    console.log(error);
   }
 };
 
@@ -156,7 +161,7 @@ const deleteUser = async (req, res) => {
   }
   try {
     await req.user.remove();
-    res.status(200).json({
+    res.status(204).json({
       success: true,
       data: 'User deleted successfully',
     });
