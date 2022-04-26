@@ -25,10 +25,6 @@ const registerNewUser = async (req, res) => {
         // Some other error
         return res.status(422).send(err);
       }
-
-      res.json({
-        success: true,
-      });
     });
     res.status(201).json({
       success: true,
