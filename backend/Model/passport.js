@@ -1,7 +1,7 @@
-require('dotenv').config();
-
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import dotenv from 'dotenv';
+dotenv.config();
+import passport from 'passport';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 passport.serializeUser(function (user, done) {
   done(null, user);
@@ -21,6 +21,6 @@ passport.use(
     },
     function (request, accessToken, refreshToken, profile, done) {
       return done(null, profile);
-    },
-  ),
+    }
+  )
 );

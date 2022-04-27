@@ -1,20 +1,16 @@
-const express = require('express');
-const {
+import { Router } from 'express';
+import {
   googleCallback,
   googleLogout,
   googleFailed,
   googleSuccess,
-} = require('../Controllers/oauthController');
-const {
+} from '../Controllers/oauthController.js';
+import {
   googleLogin,
   googleOauth,
   isGoogleLogged,
-} = require('../Middleware/oauthMiddleware');
-const router = express.Router();
-
-router.get('/', (req, res) => {
-  res.json({ message: 'You are not logged in' });
-});
+} from '../Middleware/oauthMiddleware.js';
+const router = Router();
 
 router.get('/googleFailed', googleFailed);
 router.get('/googleSuccess', isGoogleLogged, googleSuccess);
@@ -22,4 +18,4 @@ router.get('/google', googleLogin);
 router.get('/google/callback', googleOauth, googleCallback);
 router.get('/logout', googleLogout);
 
-module.exports = router;
+export default router;

@@ -1,0 +1,200 @@
+swagger: '2.0'
+info:
+  title: DSA Competition Game API
+  description: This is official documentation of dsa Competition game
+  version: 1.0
+  contact:
+    email: unicodeDsaGame@gmail.com
+    servers:
+      -url: 'http://localhost:5000'
+      description: "This is the local server to work upon"
+      -url: "https://dsa-competition-app.herokuapp.com/"
+      description: "This is the officially hosted site"
+
+schemes: [http,https]
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /:
+    get:
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'Will send `Authenticated`'
+        '403': 
+          description: 'You do not have necessary permissions for the resource'
+
+  # Register the user
+  /api/user/register:
+    post:
+      summary:  Registering the User 
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              email: 
+                type: email
+                default: "abcd@gmail.com"
+              password:
+                type: password
+                default: "abcd123" 
+              username:
+                type: string
+                default: "The Rock"
+      responses: 
+       200:
+        description: User Successfully Registered
+       400:
+        description: User unable to get registered, Error occurred
+       409:
+        description: Email/Username already exists
+
+  # Logging in User
+  /api/user/login:
+    post:
+      summary:  Logging in an User
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              email: 
+                type: email
+                default: "abc@gmail.com"
+              password: 
+                type: string
+                default: "myPassword"              
+      responses: 
+       200:
+        description: User successfully Logged In!
+       400:
+        description: Unable to Login,error Occured
+
+  # Forgot Password
+  /api/user/forgot-password:
+    post:
+      summary:  To send an email reset Link via Email
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          schema:
+            type: object
+            properties:
+              email: 
+                type: email
+                default: "abc@gmail.com"              
+      responses: 
+       200:
+        description: Successfully sent reset link to registered email id if exists
+       400:
+        description: Unable to send email ,error occured
+       404:
+        description: User Not found
+
+# Reset Password
+  /api/user/reset-password/{_id}/{newToken}:
+    post:
+      summary:  To send an email reset Link via Email
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: newToken
+        in: path
+        required: true
+        schema:
+          type: string
+      - in: body
+        name: user
+        schema:
+          type: object
+          properties:
+            password: 
+              type: string
+              default: ""  
+            confirmPassword: 
+              type: string
+              default: ""              
+      responses: 
+       200:
+        description: Successfully updated Password
+       400:
+        description: Some error occurred in resetting Password
+       404:
+        description: User Not found
+  
+  # Get Profile
+  /api/user/me:
+    get:
+      security:
+        - Bearer: []
+      summary:  To get my profile details
+      produces: 
+        - application/json
+      consumes: 
+        - application/json            
+      responses: 
+       200:
+        description: Successfully updated Password
+       400:
+        description: Some error occurred in resetting Password
+       404:
+        description: User Not found
+
+
+   # Logout User
+  /api/user/logout:
+    post:
+      security:
+        - Bearer: []
+      summary:  To logout of the given session
+      produces: 
+        - application/json
+      consumes: 
+        - application/json            
+      responses: 
+       200:
+        description: Successfully logged out
+       400:
+        description: Unable to logout
+    
+   # Delete Profile
+  /api/user/delete:
+    delete:
+      security:
+        - Bearer: []
+      summary:  To permanently delete users account
+      produces: 
+        - application/json
+      consumes: 
+        - application/json            
+      responses: 
+       204:
+        description: Account deleted successfully
+       400:
+        description: Unable to delete the account
