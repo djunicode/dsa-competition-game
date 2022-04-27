@@ -29,17 +29,9 @@ const userSchema = Schema(
     },
     password: {
       type: String,
+      minlength: [7, 'Password length must be atleast 7 characters.'],
       // required: [true, 'Password is required'],
     },
-    // role: {
-    //   type: String,
-    //   enum: ['client', 'vendor'],
-    //   required:[true,'Role must be defined']
-    // },
-
-    // profilePic: {
-    //   type: Buffer
-    // },
   },
   { timestamps: true }
 );
@@ -62,13 +54,13 @@ userSchema.statics.findByCredentials = async function (email, password) {
   const user = await this.findOne({ email });
 
   if (!user) {
-    throw new Error('Unable to login');
+    throw new Error('User doesnt exist, Try Signing Up');
   }
 
   const isMatch = await compare(password, user.password);
 
   if (!isMatch) {
-    throw new Error('Unable to login');
+    throw new Error('Username and Passwords do not match');
   }
 
   return user;
