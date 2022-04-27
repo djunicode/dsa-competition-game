@@ -1,14 +1,14 @@
-const express = require('express');
-const passport = require('passport');
-const {
+import { Router } from 'express';
+import passport from 'passport';
+import {
   githubCallback,
   isGithubLogged,
   githubLogout,
   githubSignin,
   githubFailed,
-} = require('../Controllers/githubAuthController');
-const { githubAuth } = require('../Middleware/githubAuthMiddleware');
-const router = express.Router();
+} from '../Controllers/githubAuthController.js';
+import { githubAuth } from '../Middleware/githubAuthMiddleware.js';
+const router = Router();
 
 router.get('/signin/github/', githubSignin);
 
@@ -20,4 +20,4 @@ router.get('/isGithubLogged', isGithubLogged);
 
 router.get('/githubLogout', githubLogout);
 
-module.exports = router;
+export default router;

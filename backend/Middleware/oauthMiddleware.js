@@ -1,5 +1,5 @@
-const express = require('express');
-const passport = require('passport');
+import express from 'express';
+import passport from 'passport';
 
 const googleLogin = passport.authenticate('google', {
   scope: ['email', 'profile'],
@@ -17,8 +17,4 @@ const isGoogleLogged = (req, res, next) => {
   }
 };
 
-module.exports = {
-  googleLogin,
-  googleOauth,
-  isGoogleLogged,
-};
+export { googleLogin, googleOauth, isGoogleLogged };

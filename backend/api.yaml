@@ -8,16 +8,30 @@ info:
     servers:
       -url: 'http://localhost:5000'
       description: "This is the local server to work upon"
-      -url: "http://pending"
+      -url: "https://dsa-competition-app.herokuapp.com/"
       description: "This is the officially hosted site"
 
-schemes: [http]
-
+schemes: [http,https]
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
 paths:
-  # Send Otp for verification
+  /:
+    get:
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'Will send `Authenticated`'
+        '403': 
+          description: 'You do not have necessary permissions for the resource'
+
+  # Register the user
   /api/user/register:
     post:
-      summary:  Sending Otp for contact verication
+      summary:  Registering the User 
       produces: 
         - application/json
       consumes: 
@@ -28,63 +42,27 @@ paths:
           schema:
             type: object
             properties:
-              contact: 
+              email: 
+                type: email
+                default: "abcd@gmail.com"
+              password:
+                type: password
+                default: "abcd123" 
+              username:
                 type: string
-                default: "xxxxxxxxxx"
+                default: "The Rock"
       responses: 
        200:
-        description: Success,Otp sent successfully to contact No
+        description: User Successfully Registered
        400:
-        description: Unable to send otp,error occured
-
-  # Otp verification and saving User
-  /api/user/verifyOtp/{name}/{email}/{password}/{contact}:
-    post:
-      summary:  Verifying Otp and saving User
-      produces: 
-        - application/json
-      consumes: 
-        - application/json
-      parameters:
-      - name: code
-        in: body
-        required: true
-        schema:
-            type: object
-            properties:
-              code: 
-                type: string
-                default: "xxxxxx"
-      - name: name
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: email
-        in: path
-        required: true
-        schema:
-          type: email
-      - name: password
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: contact
-        in: path
-        required: true
-        schema:
-          type: number
-      responses: 
-       200:
-        description: Success, Otp verified nd user saved
-       400:
-        description: Some error Occured
+        description: User unable to get registered, Error occurred
+       409:
+        description: Email/Username already exists
 
   # Logging in User
   /api/user/login:
     post:
-      summary:  Sending Otp for contact verication if Account exists
+      summary:  Logging in an User
       produces: 
         - application/json
       consumes: 
@@ -103,38 +81,9 @@ paths:
                 default: "myPassword"              
       responses: 
        200:
-        description: Success,Otp sent successfully to registered contact No
+        description: User successfully Logged In!
        400:
-        description: Unable to send otp,error occured
-
-# Verifying Otp for Login
-  /api/user/verifyLoginOtp/{email}:
-    post:
-      summary:  Verifying Otp and Logging in User
-      produces: 
-        - application/json
-      consumes: 
-        - application/json
-      parameters:
-      - name: code
-        in: body
-        required: true
-        schema:
-            type: object
-            properties:
-              code: 
-                type: string
-                default: "xxxxxx"
-      - name: email
-        in: path
-        required: true
-        schema:
-          type: email
-      responses: 
-       200:
-        description: Success, Otp verified and user logged in
-       400:
-        description: Some error Occured
+        description: Unable to Login,error Occured
 
   # Forgot Password
   /api/user/forgot-password:
@@ -198,3 +147,54 @@ paths:
         description: Some error occurred in resetting Password
        404:
         description: User Not found
+  
+  # Get Profile
+  /api/user/me:
+    get:
+      security:
+        - Bearer: []
+      summary:  To get my profile details
+      produces: 
+        - application/json
+      consumes: 
+        - application/json            
+      responses: 
+       200:
+        description: Successfully updated Password
+       400:
+        description: Some error occurred in resetting Password
+       404:
+        description: User Not found
+
+
+   # Logout User
+  /api/user/logout:
+    post:
+      security:
+        - Bearer: []
+      summary:  To logout of the given session
+      produces: 
+        - application/json
+      consumes: 
+        - application/json            
+      responses: 
+       200:
+        description: Successfully logged out
+       400:
+        description: Unable to logout
+    
+   # Delete Profile
+  /api/user/delete:
+    delete:
+      security:
+        - Bearer: []
+      summary:  To permanently delete users account
+      produces: 
+        - application/json
+      consumes: 
+        - application/json            
+      responses: 
+       204:
+        description: Account deleted successfully
+       400:
+        description: Unable to delete the account
