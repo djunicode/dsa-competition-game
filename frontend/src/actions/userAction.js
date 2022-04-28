@@ -1,64 +1,64 @@
-import axios from "axios";
-import localforage from "localforage";
+import axios from 'axios';
+import localforage from 'localforage';
 import {
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
-} from "../constants/userConstants";
+} from '../constants/userConstants';
 
-const url = 'https://murmuring-beach-90278.herokuapp.com/login';
+const url =
+  'https://dsa-competition-app.herokuapp.com/api/user/login/';
 
-export const login = (name, password) => async (dispatch) => {
+const login = (name, password) => async (dispatch) => {
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
-
+console.log("redux: " + name, password);
     const data = await axios.post(
       url,
       {
-        query: `
-        query {
-          authUser(email: "${name}", password: "${password}"){
-            _id
-            name
-            token
-          }
-        }
-      `,
+        email: name,
+        password: password,
       },
       {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
-    const reconstructedData = {
-      _id: data.data.data.authUser._id,
-      name: data.data.data.authUser.name,
-      token: data.data.data.authUser.token,
-    };
+    // const reconstructedData = {
+    //   _id: data.data.data.authUser._id,
+    //   name: data.data.data.authUser.name,
+    //   token: data.data.data.authUser.token,
+    // };
 
-    console.log(reconstructedData);
+    console.log(data);
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
-      payload: reconstructedData,
+      payload: data,
     });
 
-    localStorage.setItem("userInfo", JSON.stringify(reconstructedData));
+    // localStorage.setItem(
+    //   'userInfo',
+    //   JSON.stringify(reconstructedData),
+    // );
 
-    localforage.setDriver([localforage.INDEXEDDB]);
-    localforage.setItem("userInfo", JSON.stringify(reconstructedData));
-    localforage
-      .getItem("userInfo")
-      .then((value) => {
-        console.log(value);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // localforage.setDriver([localforage.INDEXEDDB]);
+    // localforage.setItem(
+    //   'userInfo',
+    //   JSON.stringify(reconstructedData),
+    // );
+    // localforage
+    //   .getItem('userInfo')
+    //   .then((value) => {
+    //     console.log(value);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
@@ -69,3 +69,5 @@ export const login = (name, password) => async (dispatch) => {
     });
   }
 };
+
+export default login;

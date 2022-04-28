@@ -5,18 +5,17 @@ import {
   CardContent,
   Typography,
   Button,
-} from "@mui/material";
-import background from "../images/background.jpg";
-import { makeStyles } from "@mui/styles";
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { login } from "../actions/userAction";
-
+} from '@mui/material';
+import background from '../images/background.jpg';
+import { makeStyles } from '@mui/styles';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import login from '../actions/userAction';
 
 export default function LoginScreen() {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
@@ -25,12 +24,12 @@ export default function LoginScreen() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(name, password)
-    dispatch(login(name, password));
-  
-
+    if (name !== undefined || password !== undefined) {
+      console.log(name, password);
+      dispatch(login(name, password));
+    }
   };
-   
+
   const classes = useStyles();
   return (
     <>
@@ -44,15 +43,18 @@ export default function LoginScreen() {
         <div>
           <Box
             style={{
-              width: "600px",
-              height: "400px",
+              width: '600px',
+              height: '400px',
             }}
           >
-            <Card sx={{ marginLeft: "20px" }} className={classes.card}>
+            <Card
+              sx={{ marginLeft: '20px' }}
+              className={classes.card}
+            >
               <CardContent
                 style={{
-                  width: "600px",
-                  height: "400px",
+                  width: '600px',
+                  height: '400px',
                 }}
               >
                 <Grid
@@ -65,7 +67,7 @@ export default function LoginScreen() {
                 >
                   <Typography
                     marginTop="2px"
-                    style={{ color: "#8985F2", fontWeight: "700" }}
+                    style={{ color: '#8985F2', fontWeight: '700' }}
                   >
                     LOGIN
                   </Typography>
@@ -82,7 +84,10 @@ export default function LoginScreen() {
                       justifyContent="flex-start"
                       alignItems="flex-start"
                     >
-                      <label htmlFor="name" style={{ color: "white" }}>
+                      <label
+                        htmlFor="name"
+                        style={{ color: 'white' }}
+                      >
                         Username
                       </label>
                       <input
@@ -90,7 +95,7 @@ export default function LoginScreen() {
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        style={{ height: "40px", width: "300px" }}
+                        style={{ height: '40px', width: '300px' }}
                       />
                     </Grid>
                     <Grid
@@ -100,7 +105,10 @@ export default function LoginScreen() {
                       justifyContent="flex-start"
                       alignItems="flex-start"
                     >
-                      <label htmlFor="password" style={{ color: "white" }}>
+                      <label
+                        htmlFor="password"
+                        style={{ color: 'white' }}
+                      >
                         Password
                       </label>
                       <input
@@ -108,26 +116,28 @@ export default function LoginScreen() {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        style={{ height: "40px", width: "300px" }}
+                        style={{ height: '40px', width: '300px' }}
                       />
                     </Grid>
                     <Button
-                    type="submit"
+                      type="submit"
                       variant="contained"
                       style={{
-                        background: "#8985F2",
-                        borderRadius: "3.5px",
-                        width: "300px",
-                        height: "40px",
-                        marginTop: "20px",
+                        background: '#8985F2',
+                        borderRadius: '3.5px',
+                        width: '300px',
+                        height: '40px',
+                        marginTop: '20px',
                       }}
                     >
                       LOGIN
                     </Button>
                   </Box>
-                  <Typography style={{ color: "white" }}>
-                    Don't have and account?{" "}
-                    <span style={{ color: "#8985F2", fontWeight: "700" }}>
+                  <Typography style={{ color: 'white' }}>
+                    Don't have and account?{' '}
+                    <span
+                      style={{ color: '#8985F2', fontWeight: '700' }}
+                    >
                       Sign Up
                     </span>
                   </Typography>
@@ -143,23 +153,23 @@ export default function LoginScreen() {
 
 const useStyles = makeStyles(() => ({
   outerGrid: {
-    width: "150vw",
-    height: "100vh",
+    width: '150vw',
+    height: '100vh',
     backgroundImage: `url(${background})`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    overflow: "hidden",
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    overflow: 'hidden',
   },
   card: {
-    background: "rgba( 84, 78, 78, 0.35 )!important",
-    boxShadow: "0 8px 32px 0 rgba( 31, 38, 135, 0.37 )!important",
-    backdropFilter: "blur( 3.5px )!important",
+    background: 'rgba( 84, 78, 78, 0.35 )!important',
+    boxShadow: '0 8px 32px 0 rgba( 31, 38, 135, 0.37 )!important',
+    backdropFilter: 'blur( 3.5px )!important',
 
-    border: "1px solid rgba( 255, 255, 255, 0.18 )!important",
-    width: "600px",
-    height: "400px",
-    backgroundColor: "none!important",
+    border: '1px solid rgba( 255, 255, 255, 0.18 )!important',
+    width: '600px',
+    height: '400px',
+    backgroundColor: 'none!important',
     // boxShadow: "none",
   },
 }));
