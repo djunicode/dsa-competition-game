@@ -22,7 +22,7 @@ const roomSchema = Schema({
     },
   ],
   problemStatement: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'ProblemStatement',
   }
