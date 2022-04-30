@@ -24,6 +24,7 @@ const roomSchema = Schema({
   problemStatement: {
     type: String,
     required: true,
+    ref: 'ProblemStatement',
   }
 });
 
