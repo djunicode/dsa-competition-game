@@ -11,18 +11,18 @@ const problemStatementSchema = Schema({
     type: String,
     required: true,
   }, 
-  inputs: {
+  inputs: [{
     type: String,
     required: true,
-  }, 
-  outputs: {
+  }], 
+  outputs: [{
     type: String,
     required: true,
-  }, 
-  testcases: {
+  }], 
+  testcases: [{
     type: String,
     required: true,
-  }
+  }],
   difficulty: {
     type: String,
     required: true,

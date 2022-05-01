@@ -21,11 +21,11 @@ const roomSchema = Schema({
       ref: 'User',
     },
   ],
-  problemStatement: {
+  problemStatement: [{
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'ProblemStatement',
-  }
+  }]
 });
 
 
