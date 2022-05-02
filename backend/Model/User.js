@@ -1,5 +1,5 @@
-import pkg from 'mongoose';
-const { Schema, model } = pkg;
+import mongoose from 'mongoose';
+const { Schema, model } = mongoose;
 
 import validator from 'validator';
 const { isEmail } = validator;
@@ -34,11 +34,11 @@ const userSchema = Schema(
     },
     problemsSolved: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'ProblemStatement'
+      ref: 'ProblemStatement',
     },
     score: {
-      type: Number
-    }
+      type: Number,
+    },
   },
   { timestamps: true }
 );
