@@ -6,7 +6,7 @@ const googleLogin = passport.authenticate('google', {
 });
 
 const googleOauth = passport.authenticate('google', {
-  failureRedirect: '/googleFailed',
+  failureRedirect: '/api/user/googleFailed',
 });
 
 const isGoogleLogged = (req, res, next) => {

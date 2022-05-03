@@ -14,8 +14,8 @@ const userSchema = Schema(
     username: {
       type: String,
       required: [true, 'Please enter your name'],
-      unique: true,
-      dropDups: true,
+      // unique: true,
+      // dropDups: true,
     },
     email: {
       unique: [true, 'Email already taken'],
@@ -31,6 +31,9 @@ const userSchema = Schema(
       type: String,
       minlength: [7, 'Password length must be atleast 7 characters.'],
       // required: [true, 'Password is required'],
+    },
+    googleId: {
+      type: String,
     },
     problemsSolved: {
       type: mongoose.Schema.Types.ObjectId,

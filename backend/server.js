@@ -28,10 +28,8 @@ app.use(
 );
 app.use(express.urlencoded({ extended: false }));
 
-app.use(oauthRoutes);
-app.use('/api/user', githubAuthRoutes);
-app.use('/api/user', userRoutes);
-app.use('/code', codeRoutes);
+app.use('/api/user', userRoutes, githubAuthRoutes, oauthRoutes);
+app.use('/api/code', codeRoutes);
 app.use('/', serve, setup(swaggerJsDocs));
 
 const port = process.env.PORT || 5000;
