@@ -17,22 +17,13 @@ securityDefinitions:
     type: apiKey
     name: Authorization
     in: header
-paths:
-  /:
-    get:
-      security:
-        - Bearer: []
-      responses:
-        '200':
-          description: 'Will send `Authenticated`'
-        '403': 
-          description: 'You do not have necessary permissions for the resource'
 
   # Register the user
+paths:
   /api/user/register:
     post:
       summary:  Registering the User 
-      produces: 
+      produces:  
         - application/json
       consumes: 
         - application/json

@@ -32,6 +32,13 @@ const userSchema = Schema(
       minlength: [7, 'Password length must be atleast 7 characters.'],
       // required: [true, 'Password is required'],
     },
+    problemsSolved: {
+      type: Schema.Types.ObjectId,
+      ref: 'ProblemStatement',
+    },
+    score: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
