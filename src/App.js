@@ -8,6 +8,7 @@ import { BrowserRouter as Router,
   Redirect,
   Switch
  } from 'react-router-dom';
+import LandingPageLogin from './Components/LandiPageLogin';
 function App() {
   return (
     <div className="App">
@@ -21,6 +22,9 @@ function App() {
           </Route>
           <Route path="/landingpage" exact>
             <LandingPage/>
+          </Route>
+          <Route path="/landingpagelog" exact>
+            <LandingPageLogin/>
           </Route>
         </Switch>
       </Router>

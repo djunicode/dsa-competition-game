@@ -1,26 +1,25 @@
 import React from 'react'
 import {Grid , Box , Button} from '@mui/material'
-import person from '../Images/Vector.png'
+import person from '../Images/Vectorwhite.png'
 import image from '../Images/image2.png'
-import {Link} from 'react-router-dom'
-const LandingPage = () => {
+import profile from '../Images/profile.png'
+const LandingPageLogin = () => {
   return (
-    <div style={{backgroundImage:`url(${image})` , backgroundSize:"cover"}}>
+    <div style={{backgroundImage:`url(${image})`}}>
       <Grid container spacing={5}>
         <Grid item xs={12}>
           <Grid container padding={2}>
-            <Grid item md={8} xs={6}></Grid>
-            <Grid item md={2} xs={3}
+            <Grid item md={8} xs={4}></Grid>
+            <Grid item md={3} xs={7}
              sx={{textAlign:"Right" , fontSize:"1.3rem" , fontWeight:"500" , color:"white" ,marginTop:"1.5vh"}}>
-              Guest
+            <Grid container>
+                <Grid item xs={5}>
+                    <img src={profile} alt="profile" style={{width:"30px" , height:"30px"}} />
+                </Grid>
+                <Grid item xs={7}>Kush Maniar</Grid>
             </Grid>
-            <Grid item md={2} xs={3}>
-            <Link to="/landingpagelog" style={{textDecoration:"none"}}>
-            <Button  sx={{fontSize:"1.05rem", color:"white" , backgroundColor:"#8985F2" , paddingLeft:"2vh" , paddingRight:"2vh"}}>
-              Login
-            </Button>
-            </Link>
             </Grid>
+            <Grid item xs={1} ></Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} 
@@ -39,7 +38,7 @@ const LandingPage = () => {
                 <Grid container>
                   <Grid item xs={1} md={3} sm={3}></Grid>
                   <Grid item xs={10} md={6} sm={6}>
-                    <Box sx={{backgroundColor:"#4E4D62" , color:"white" , fontSize:"1.3rem" , padding:"1.1vh"}}>Create Room</Box>
+                    <Box sx={{backgroundColor:"#8985F2" , color:"white" , fontSize:"1.3rem" , padding:"1.1vh"}}>Create Room</Box>
                   </Grid>
                   <Grid item xs={1} md={3} sm={3}></Grid>
                 </Grid>
@@ -80,11 +79,11 @@ const LandingPage = () => {
                       <Grid item xs={12}>
                         <Grid container padding={2}>
                           <Grid item xs={4} 
-                          sx={{textAlign:"left" , fontSize:"1.1rem" , color:"#FFFFFF26" , fontWeight:"550"}}
+                          sx={{textAlign:"left" , fontSize:"1.1rem" , color:"white" , fontWeight:"550"}}
                           >Public Room 1</Grid>
                           <Grid item xs={3}></Grid>
                           <Grid item xs={3}
-                          sx={{textAlign:"right" , fontSize:"1.1rem", color:"#FFFFFF26" , fontWeight:"550"}}>79/100</Grid>
+                          sx={{textAlign:"right" , fontSize:"1.1rem", color:"white" , fontWeight:"550"}}>79/100</Grid>
                           <Grid item xs={2}>
                             <img src={person} alt="person" style={{width:"30px" , height:"20px"}}/>
                           </Grid>
@@ -102,4 +101,4 @@ const LandingPage = () => {
   )
 }
 
-export default LandingPage
+export default LandingPageLogin
