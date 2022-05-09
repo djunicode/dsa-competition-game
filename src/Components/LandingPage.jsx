@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import {Grid , Box , Button} from '@mui/material'
+import {Grid , Box , Button, TextField} from '@mui/material'
 import person from '../Images/Vector.png'
 import person2 from '../Images/Vectorwhite.png'
 import image from '../Images/image2.png'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {Link} from 'react-router-dom'
 const LandingPage = () => {
 
@@ -93,7 +94,15 @@ const [login,setLogin] = useState(true);
                 <Grid container>
                   <Grid item xs={1} md={3} sm={3}></Grid>
                   <Grid item xs={10} md={6} sm={6}>
-                    <Box sx={{backgroundColor:"white" ,textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh"}}>abc-000-xyz</Box>
+                    <Grid container sx={{backgroundColor:"white" ,}}>
+                      <Grid item xs={10}>
+                      <Box sx={{textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh"}}>abc-000-xyz</Box>
+                      </Grid>
+                      <Grid item xs={2}>
+                    <ArrowForwardIosIcon sx={{paddingTop:"1vh"}}/></Grid>
+                    </Grid>
+                    {/*<Box sx={{backgroundColor:"white" ,textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh"}}>abc-000-xyz
+                    <ArrowForwardIosIcon sx={{marginLeft:"25vh" , paddingTop:"0.5vh"}}/></Box>*/}
                   </Grid>
                   <Grid item xs={1} md={3} sm={3}></Grid>
                 </Grid>

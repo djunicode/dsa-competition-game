@@ -2,8 +2,11 @@
 .App {
   text-align: center;
   font-family: 'Poppins', sans-serif;
+  
 }
-
+input:focus {
+  outline: none !important;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
