@@ -33,12 +33,21 @@ const userSchema = Schema(
       // required: [true, 'Password is required'],
     },
     problemsSolved: {
+<<<<<<< HEAD
+      type: Schema.Types.ObjectId,
+      ref: 'ProblemStatement',
+    },
+    score: {
+      type: Number,
+    },
+=======
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ProblemStatement'
     },
     score: {
       type: Number
     }
+>>>>>>> 1b1f3e064f7ea188d775c10fe54ff49d20c1968f
   },
   { timestamps: true }
 );
