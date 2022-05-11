@@ -176,7 +176,6 @@ const deleteUser = async (req, res) => {
 
 const deleteALL = async (req, res) => {
   try {
-    mongoose.connection.dropDatabase();
     User.deleteMany({}, () => {
       res.status(200).json({ message: 'Deleted all users!' });
     });
