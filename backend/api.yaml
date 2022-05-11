@@ -41,6 +41,7 @@ paths:
           description: 'You do not have necessary permissions for the resource'
 
   # Register the user
+paths:
   /api/user/register:
     post:
       summary:  Registering the User

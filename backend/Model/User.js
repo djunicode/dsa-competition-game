@@ -39,7 +39,7 @@ const userSchema = Schema(
       type: String,
     },
     problemsSolved: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'ProblemStatement',
     },
     score: {
