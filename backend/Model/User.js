@@ -35,6 +35,9 @@ const userSchema = Schema(
     googleId: {
       type: String,
     },
+    githubId: {
+      type: String,
+    },
     problemsSolved: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ProblemStatement',

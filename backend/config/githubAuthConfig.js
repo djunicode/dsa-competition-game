@@ -20,16 +20,27 @@ passport.use(
       callbackURL: 'http://localhost:5000/api/user/signin/github/callback',
     },
     (accessToken, refreshToken, profile, cb) => {
-      // console.log(profile);
-      User.findOrCreate(
-        {
-          name: profile.username,
-          email: profile._json.email,
-        },
-        (err, user) => {
-          return cb(err, user);
+      console.log('profile from github config', profile);
+      User.findOne({ githubId: profile.id }, async (err, user) => {
+        if (err) {
+          cb(err, false);
         }
-      );
+        if (!user) {
+          const newUser = new User({
+            githubId: profile.id,
+            email: profile._json.email
+              ? profile._json.email
+              : 'thisEmailIsNotValid@gmail.com',
+            username: profile.displayName,
+          });
+          const token = await newUser.generateAuthToken();
+
+          await newUser.save();
+          cb(null, { newUser, token });
+        }
+        const token = await user.generateAuthToken();
+        return cb(null, { token, user });
+      });
     }
   )
 );
