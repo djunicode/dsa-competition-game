@@ -72,7 +72,13 @@ const [login,setLogin] = useState(true);
                 <Grid container>
                   <Grid item xs={1} md={3} sm={3}></Grid>
                   <Grid item xs={10} md={6} sm={6}>
-                    <Box sx={{backgroundColor:login ? "#4E4D62" : "#8985F2" , color:"white" , fontSize:"1.3rem" , padding:"1.1vh"}}>Create Room</Box>
+                    <Box sx={{backgroundColor:login ? "#4E4D62" : "#8985F2" , color:"white" , fontSize:"1.3rem" , padding:"1.1vh" , height:"2rem"
+                  }}>
+                      {login ?
+                      <Button disabled sx={{backgroundColor:login ? "#4E4D62" : "#8985F2" , color:"white" , fontSize:"1.3rem" ,height:"2rem", padding:"1.1vh"}}>Create Room</Button> 
+                      : <Button sx={{backgroundColor:login ? "#4E4D62" : "#8985F2" , color:"white" , fontSize:"1.3rem" ,height:"2rem", padding:"1.1vh"}}>Create Room</Button>
+                      }
+                    </Box>
                   </Grid>
                   <Grid item xs={1} md={3} sm={3}></Grid>
                 </Grid>
@@ -96,7 +102,7 @@ const [login,setLogin] = useState(true);
                   <Grid item xs={10} md={6} sm={6}>
                     <Grid container sx={{backgroundColor:"white" ,}}>
                       <Grid item xs={10}>
-                      <Box sx={{textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh"}}>abc-000-xyz</Box>
+                      <TextField sx={{textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh" , height:"1.2rem"}}>abc-000-xyz</TextField>
                       </Grid>
                       <Grid item xs={2}>
                     <ArrowForwardIosIcon sx={{paddingTop:"1vh"}}/></Grid>
