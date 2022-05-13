@@ -1,8 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 dotenv.config();
-import path from 'path';
-import { fileURLToPath } from 'url';
 import passport from 'passport';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -22,15 +20,17 @@ import oauthRoutes from './Routes/googleAuthRoutes.js';
 import githubAuthRoutes from './Routes/githubAuthRoutes.js';
 import userRoutes from './Routes/userRoutes.js';
 import codeRoutes from './Routes/codeRoutes.js';
+import problemRoutes from './Routes/problemStatRoutes.js';
 import roomEvents from './events/roomEvents.js';
 import scoreEvents from './events/scoreEvents.js';
 import gameEvents from './events/gameEvents.js';
-import { redisClient } from './config/redis.js';
+import redisClient from './config/redis.js';
 
 const app = express();
 app.use(morgan('tiny'));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 app.use(cookieSession({ name: 'auth-session', keys: ['key1', 'key2'] }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -41,6 +41,13 @@ app.use(
     origin: '*',
   })
 );
+
+app.use(oauthRoutes);
+app.use('/api/user', githubAuthRoutes);
+app.use('/api/user', userRoutes);
+app.use('/code', codeRoutes);
+app.use('/docs', serve, setup(swaggerJsDocs));
+app.use('/problems', problemRoutes);
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/user', userRoutes, githubAuthRoutes, oauthRoutes);
@@ -60,8 +67,10 @@ const io = new Server(httpServer, {
 
 io.adapter(redis({ host: '127.0.0.1', port: 6379 }));
 
-io.on('connection', (socket) => {
+io.on('connection', (socket, req) => {
   console.log('A user connected');
+  // console.log(req.user);
+  socket.data = { userId: '1234' }; // replace with req.user
   roomEvents(socket, io, redisClient);
   scoreEvents(socket, io, redisClient);
   gameEvents(socket, io, redisClient);
