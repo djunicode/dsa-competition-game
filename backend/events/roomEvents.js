@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import User from '../Model/User.js';
 
 const createRoomString = () => {
   const backString = crypto.randomBytes(4).toString('hex');
@@ -7,95 +8,249 @@ const createRoomString = () => {
 };
 
 const roomEvents = (socket, io, redisClient) => {
+  const preJoinedRoom = async () => {
+    // console.log(socket.data);
+    const userInRoom = await redisClient.get(
+      socket.data.userId + 'CurrentlyIn'
+    );
+    if (userInRoom !== null) {
+      console.log(userInRoom);
+      socket.emit('userInRoom', { userInRoom: userInRoom });
+      // this emit expects socket.emit('rejoin_room')
+    }
+  };
+  preJoinedRoom();
+
+  // expecting {playerLimit: 10,userId: '62710f48fee2c40536fc062a',difficulty: 'Easy',rounds: 6,timeLimitPerQ: 10,additionalInfo: 'Be good in chatRoom'}
   socket.on('create_room', async (data) => {
     const roomId = createRoomString();
-    socket.join(roomId);
+    const userInfo = await User.findById(data.userId);
+    const userName = userInfo.username;
+    const newData = {
+      playerLimit: data.playerLimit,
+      userId: data.userId,
+      userName: userName,
+      difficulty: data.difficulty,
+      rounds: data.rounds,
+      timeLimitPerQ: data.timeLimitPerQ,
+      additionalInfo: data.additionalInfo,
+      roomId: roomId,
+    };
+    socket.data = newData;
+    socket.join(socket.data.roomId);
+    console.log(socket.data);
     try {
-      await socket.emit('return_room_id', { roomId: roomId });
-      await redisClient.set(roomId + 'length', data.totalNo);
-      const roomMaxLength = await redisClient.get(roomId + 'length');
-      await redisClient.set(roomId + 'admin', data.userId);
-      const adminId = await redisClient.get(roomId + 'admin');
-      await redisClient.rpush(roomId + 'members', data.userId);
-      const allUsers = await redisClient.lrange(roomId + 'members', 0, -1);
+      await socket.emit('return_room_id', { roomId: socket.data.roomId });
+      await redisClient.set(
+        socket.data.roomId + 'playerLimit',
+        socket.data.playerLimit
+      );
+      const roomMaxLength = await redisClient.get(
+        socket.data.roomId + 'playerLimit'
+      );
+      await redisClient.set(socket.data.roomId + 'adminId', socket.data.userId);
+      const adminId = await redisClient.get(socket.data.roomId + 'adminId');
+      await redisClient.set(
+        socket.data.roomId + 'adminName',
+        socket.data.userName
+      );
+      const adminName = await redisClient.get(socket.data.roomId + 'adminName');
+      const newUser = JSON.stringify({
+        userName: socket.data.userName,
+        userId: socket.data.userId,
+      });
+      await redisClient.rpush(socket.data.roomId + 'members', newUser);
+      const allUsers = await redisClient.lrange(
+        socket.data.roomId + 'members',
+        0,
+        -1
+      );
+      const arrayOfUser = allUsers.map(JSON.parse);
       const roomStatus = {
         roomMaxLength,
-        adminId: adminId,
-        allUsers,
+        admin: { adminId: adminId, adminName: adminName },
+        arrayOfUser,
       };
-      console.log(roomStatus);
-      io.in(roomId).emit(data.userName + 'created the room', roomStatus);
+      // console.log(roomStatus);
+      io.in(socket.data.roomId).emit(
+        socket.data.userName + 'created the room',
+        roomStatus
+      );
     } catch (error) {
+      console.log('Create_room');
       console.log(error);
     }
   });
 
-  socket.on('join_room', async (data) => {
+  // expecting {userId:req.user,roomId:roomId}
+  socket.on('join_room', async (data, req) => {
     try {
-      const roomLenString = await redisClient.get(data.roomId + 'length');
+      // console.log(req.user);
+      const userInfo = await User.findById(data.userId);
+      const userName = userInfo.username;
+      const newData = {
+        userId: data.userId,
+        userName: userName,
+        roomId: data.roomId,
+      };
+      socket.data = newData;
+      const roomLenString = await redisClient.get(
+        socket.data.roomId + 'playerLimit'
+      );
       const roomLength = parseInt(roomLenString);
-      const adminId = await redisClient.get(data.roomId + 'admin');
-      const currentUsers = await redisClient.llen(data.roomId + 'members');
+      const adminId = await redisClient.get(socket.data.roomId + 'adminId');
+      const adminName = await redisClient.get(socket.data.roomId + 'adminName');
+      const currentUsers = await redisClient.llen(
+        socket.data.roomId + 'members'
+      );
       if (!adminId) {
         throw new Error('The room You want to enter does not exist');
       } else if (currentUsers === roomLength) {
         throw new Error('The room is Full');
       } else {
-        socket.join(data.roomId);
-        await redisClient.rpush(data.roomId + 'members', data.userId);
+        socket.join(socket.data.roomId);
+        const newUser = JSON.stringify({
+          userName: socket.data.userName,
+          userId: socket.data.userId,
+        });
+        await redisClient.rpush(socket.data.roomId + 'members', newUser);
       }
-      const allUsers = await redisClient.lrange(data.roomId + 'members', 0, -1);
+      const allUsers = await redisClient.lrange(
+        socket.data.roomId + 'members',
+        0,
+        -1
+      );
+      const arrayOfUser = allUsers.map(JSON.parse);
+      const roomMaxLength = await redisClient.get(
+        socket.data.roomId + 'playerLimit'
+      );
       const roomStatus = {
         roomMaxLength,
-        currentUsers,
-        adminId: adminId,
-        allUsers,
+        currentUsers, // Currently total no of users in room
+        admin: { adminId: adminId, adminName: adminName },
+        arrayOfUser,
       };
       console.log(roomStatus);
       socket
-        .to(data.roomId)
-        .emit(data.userName + ' joined the Lobby', roomStatus);
+        .to(socket.data.roomId)
+        .emit(socket.data.userName + ' joined the Lobby', roomStatus);
       socket.to(socket.id).emit('You joined the Lobby ', roomStatus);
     } catch (error) {
+      console.log('Join room');
       console.log(error);
     }
   });
 
-  socket.on('disconnect', async (data) => {
+  // expecting {userId:req.user,roomId:roomId}
+  socket.on('rejoin_room', async (data, req) => {
     try {
-      let currParticipants = await redisClient.lrem(
-        data.roomId + 'users',
-        1,
-        data.userId
+      // console.log(req.user);
+      const roomMaxLength = await redisClient.get(
+        socket.data.roomId + 'playerLimit'
       );
-      if (currParticipants.length !== 0) {
-        let adminId = await redisClient.get(data.roomId + 'admin');
-        if (adminId !== data.userId) {
-          socket.to(data.roomId).emit(data.roomId + ' has left the lobby');
-          socket.leave(data.roomId);
-        } else {
-          socket.to(data.roomId).emit('Admin has left the chat');
-          await redisClient.set(data.roomId + 'admin', currParticipants[0]);
+      const userName = await User.findById(socket.data.userId);
+      const newData = {
+        userId: data.userId, //req.user
+        userName: userName,
+        roomId: data.roomId,
+      };
+      socket.data = newData;
+      socket.join(socket.data.roomId);
+      const newUser = JSON.stringify({
+        userName: socket.data.userName,
+        userId: socket.data.userId,
+      });
+      await redisClient.rpush(socket.data.roomId + 'members', newUser);
+      const allUsers = await redisClient.lrange(
+        socket.data.roomId + 'members',
+        0,
+        -1
+      );
+      const arrayOfUser = allUsers.map(JSON.parse);
+      const adminId = await redisClient.get(socket.data.roomId + 'adminId');
+      const adminName = await redisClient.get(socket.data.roomId + 'adminName');
+      const currentUsers = await redisClient.llen(
+        socket.data.roomId + 'members'
+      );
+      const roomStatus = {
+        roomMaxLength,
+        currentUsers, // Currently total no of users in room
+        admin: { adminId: adminId, adminName: adminName },
+        arrayOfUser,
+      };
+      console.log(roomStatus);
+      io.in(socket.data.roomId).emit(
+        socket.data.userName + ' rejoined the room'
+      );
+    } catch (error) {
+      console.log('rejoin room');
+      console.log(error);
+    }
+  });
+
+  socket.on('disconnect', async () => {
+    try {
+      console.log('Disconnect starts here');
+      console.log(socket.data);
+      const currUser = JSON.stringify({
+        userName: socket.data.userName,
+        userId: socket.data.userId,
+      });
+      await redisClient.lrem(socket.data.roomId + 'members', 1, currUser);
+      const currentUsersLen = await redisClient.llen(
+        socket.data.roomId + 'members'
+      );
+      if (currentUsersLen !== 0) {
+        const adminId = await redisClient.get(socket.data.roomId + 'admin');
+        if (adminId !== socket.data.userId) {
           socket
-            .to(data.roomId)
+            .to(socket.data.roomId)
+            .emit(socket.data.roomId + ' has left the lobby');
+          socket.leave(socket.data.roomId);
+        } else {
+          socket.to(socket.data.roomId).emit('Admin has left the chat');
+          const participantsLeft = await redisClient.lrange(
+            socket.data.roomId + 'members',
+            0,
+            -1
+          );
+          const arrayOfUser = participantsLeft(JSON.parse);
+          await redisClient.set(
+            socket.data.roomId + 'adminId',
+            arrayOfUser[0].userId
+          );
+          await redisClient.set(
+            socket.data.roomId + 'adminName',
+            arrayOfUser[0].userName
+          );
+          socket
+            .to(socket.data.roomId)
             .emit(currParticipants[0] + ' is now the admin');
         }
-        socket.leave(data.roomId);
-        const roomMaxLength = await redisClient.get(data.roomId + 'length');
-        const allUsers = await redisClient.lrange(roomId + 'members', 0, -1);
-        adminId = await redisClient.get(data.roomId + 'admin');
+        socket.leave(socket.data.roomId);
+        const roomMaxLength = await redisClient.get(
+          socket.data.roomId + 'playerLimit'
+        );
+        adminId = await redisClient.get(socket.data.roomId + 'adminId');
+        const thisUser = await User.findById(adminId);
+        const adminName = thisUser.username;
+        const currentUsers = await redisClient.llen(
+          socket.data.roomId + 'members'
+        );
         const roomStatus = {
           roomMaxLength,
-          adminId: adminId,
-          allUsers,
+          currentUsers, // Currently total no of users in room
+          admin: { adminId: adminId, adminName: adminName },
+          arrayOfUser,
         };
-        io.in(roomId).emit('Current room status:', roomStatus);
+        io.in(socket.roomId).emit('Current room status:', roomStatus);
       } else {
-        await redisClient.del(data.roomId + 'length');
-        await redisClient.del(data.roomId + 'admin');
-        await redisClient.del(data.roomId + 'members');
+        await redisClient.del(socket.data.roomId + 'length');
+        await redisClient.del(socket.data.roomId + 'admin');
+        await redisClient.del(socket.data.roomId + 'members');
       }
     } catch (error) {
+      console.log('Disconnect room');
       console.log(error);
     }
   });
