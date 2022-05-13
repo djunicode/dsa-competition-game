@@ -32,7 +32,6 @@ const runCodePy = async (req, res) => {
     'python',
     `tc = """${testCases}"""
 dtc = [int(s) for s in tc.split() if s.isdigit()]
-print(dtc)
 
 
 ${pycode}
@@ -40,8 +39,8 @@ ${pycode}
 
 t = ${testNum}
 for i in range(t):
-    if(add(dtc[3*i], dtc[3*i+1]) == dtc[3*i+2]):
-        print(i, "Pass")
+    if(${functionName}(dtc[3*i], dtc[3*i+1]) == dtc[3*i+2]):
+        print(i+1, "Pass")
     else:
         print("FAILED AT TESTCASE", (i+1))
         break
@@ -54,7 +53,11 @@ for i in range(t):
   //     signal: null,
   //     output: 'Hello World!\n'
   // }}
-  res.status(200).json({ language: req.param.lang, result });
+  if (result.run.stderr === '') {
+    res.status(200).json({ language: req.param.lang, result });
+  } else {
+    res.status(400).json({ language: req.param.lang, result });
+  }
 };
 
 // Incomplete implementation
