@@ -1,5 +1,6 @@
 import pkg from 'mongoose';
 const { Schema, model } = pkg;
+import User from './User';
 
 const problemStatementSchema = Schema({
   title: {
