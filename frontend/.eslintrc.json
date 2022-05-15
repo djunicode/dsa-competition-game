@@ -23,7 +23,7 @@
       { "extensions": [".js", ".jsx"] }
     ],
     "no-console": "off",
-    "no-unused-vars": "error",
+    "no-unused-vars": "off",
     "react/prop-types": "off",
     "no-underscore-dangle": "off",
     "no-nested-ternary": "off",
@@ -36,6 +36,7 @@
         "endOfLine": "auto"
       }
     ],
+    "react/jsx-props-no-spreading": "off",
     "requireConfigFile": false
   }
 }
