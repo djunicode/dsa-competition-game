@@ -4,18 +4,20 @@ import {
   googleLogout,
   googleFailed,
   googleSuccess,
-} from '../Controllers/oauthController.js';
+} from '../Controllers/googleAuthController.js';
+import auth from '../Middleware/auth.js';
 import {
   googleLogin,
   googleOauth,
   isGoogleLogged,
-} from '../Middleware/oauthMiddleware.js';
+  isGoogleJWT,
+} from '../Middleware/googleAuthMiddleware.js';
 const router = Router();
 
-router.get('/googleFailed', googleFailed);
-router.get('/googleSuccess', isGoogleLogged, googleSuccess);
 router.get('/google', googleLogin);
 router.get('/google/callback', googleOauth, googleCallback);
-router.get('/logout', googleLogout);
+router.get('/googleSuccess', isGoogleLogged, googleSuccess);
+router.get('/googleFailed', googleFailed);
+router.get('/googleLogout', googleLogout);
 
 export default router;

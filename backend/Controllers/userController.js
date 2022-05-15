@@ -6,6 +6,7 @@ import User from '../Model/User.js';
 import dotenv from 'dotenv';
 dotenv.config();
 import Mail from '../Mailing/gmail.js';
+import mongoose from 'mongoose';
 
 //Register a user
 const registerNewUser = async (req, res) => {
@@ -173,6 +174,16 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const deleteALL = async (req, res) => {
+  try {
+    User.deleteMany({}, () => {
+      res.status(200).json({ message: 'Deleted all users!' });
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 const forgotPassword = async (req, res) => {
   try {
     const email = req.body.email;
@@ -265,4 +276,5 @@ export {
   deleteUser,
   forgotPassword,
   resetPassword,
+  deleteALL,
 };

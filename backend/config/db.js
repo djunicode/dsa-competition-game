@@ -1,5 +1,5 @@
-import pkg from 'mongoose';
-const { connect } = pkg;
+import mongoose from 'mongoose';
+const { connect } = mongoose;
 
 const connectDB = async () => {
   try {
