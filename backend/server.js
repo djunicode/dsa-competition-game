@@ -22,11 +22,15 @@ import codeRoutes from './Routes/codeRoutes.js';
 import roomEvents from './events/roomEvents.js';
 import scoreEvents from './events/scoreEvents.js';
 import gameEvents from './events/gameEvents.js';
+import chatEvents from './events/chatEvents.js';
 import { redisClient } from './config/redis.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+app.set("view engine", "ejs")
+
 app.use(cookieSession({ name: 'auth-session', keys: ['key1', 'key2'] }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -64,6 +68,7 @@ io.on('connection', (socket) => {
   roomEvents(socket, io, redisClient);
   scoreEvents(socket, io, redisClient);
   gameEvents(socket, io, redisClient);
+  chatEvents(socket, io, redisClient);
 });
 
 httpServer.listen(port, () => {

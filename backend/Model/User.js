@@ -1,5 +1,5 @@
-import pkg from 'mongoose';
-const { Schema, model } = pkg;
+import mongoose from 'mongoose';
+const { Schema, model } = mongoose;
 
 import validator from 'validator';
 const { isEmail } = validator;
@@ -14,8 +14,8 @@ const userSchema = Schema(
     username: {
       type: String,
       required: [true, 'Please enter your name'],
-      unique: true,
-      dropDups: true,
+      // unique: true,
+      // dropDups: true,
     },
     email: {
       unique: [true, 'Email already taken'],
@@ -32,22 +32,19 @@ const userSchema = Schema(
       minlength: [7, 'Password length must be atleast 7 characters.'],
       // required: [true, 'Password is required'],
     },
+    googleId: {
+      type: String,
+    },
+    githubId: {
+      type: String,
+    },
     problemsSolved: {
-<<<<<<< HEAD
       type: Schema.Types.ObjectId,
       ref: 'ProblemStatement',
     },
     score: {
       type: Number,
     },
-=======
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'ProblemStatement'
-    },
-    score: {
-      type: Number
-    }
->>>>>>> 1b1f3e064f7ea188d775c10fe54ff49d20c1968f
   },
   { timestamps: true }
 );
