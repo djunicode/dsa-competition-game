@@ -63,7 +63,7 @@ const [login,setLogin] = useState(true);
           <Grid container padding={5}>
             <Grid item xs={12} md={6} sm={6} 
             sx={{backgroundColor:"rgba(255, 255, 255, 0.1) ",justifyContent : "center" , alignContent:"center" }}>
-            <Grid conatiner padding={2} spacing={5}>
+            <Grid container padding={2} spacing={5}>
               <Grid item xs={12}
               sx={{fontSize:"1.3rem",marginTop:"6%" , marginBottom:"6%" , color:"white"}}>
               Host a game and invite your friends.

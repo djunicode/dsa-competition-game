@@ -9,13 +9,17 @@ import { BrowserRouter as Router,
   Switch
  } from 'react-router-dom';
 import LandingPageLogin from './Components/LandiPageLogin';
+import TextEditor from './Components/TextEditor';
 function App() {
   return (
     <div className="App">
       <Router>
         <Switch>
-          <Route path="/" exact>
+          <Route path="/landingpage" exact>
           <LandingPage/>
+          </Route>
+          <Route path="/codeeditor" exact>
+          <TextEditor/>
           </Route>
         </Switch>
       </Router>
