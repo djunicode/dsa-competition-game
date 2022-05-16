@@ -24,7 +24,7 @@ const chatEvents = (socket, io, redisClient) => {
     // io.emit('message', { from, message });
      var keys = Object.keys(socket.rooms);
      for (var i = 0; i < keys.length; i++) {
-       io.to(socket.rooms[keys[i]]).emit('chat message', msg);
+       io.to(socket.rooms[keys[i]]).emit('message', { from, message });
      }
   });
 }
