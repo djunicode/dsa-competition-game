@@ -1,12 +1,16 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
-import SignupScreen from './screens/SignupScreen';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import SignupScreen from './screens/SignupScreen';
+import LandingPage from './screens/LandingPage';
+import TextEditor from './screens/TextEditor';
+import CreateRoomModal from './components/CreateRoomModal';
+import JoinRoomModal from './components/JoinRoomModal';
 
-const darkTheme = createTheme({
+const lightTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
       main: '#8985f2',
     },
@@ -31,12 +35,33 @@ const darkTheme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Link to="/signup">Signup page</Link>} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <div>
+                    <Link to="/signup">Signup page</Link>
+                  </div>
+                  <div>
+                    <Link to="/landingPage">Landing page</Link>
+                  </div>
+                  <div>
+                    <Link to="/codeEditor">Code Editor page</Link>
+                  </div>
+                  <div>
+                    <CreateRoomModal />
+                  </div>
+                  <div>{/* <JoinRoomModal /> */}</div>
+                </>
+              }
+            />
             <Route path="signup" element={<SignupScreen />} />
+            <Route path="landingPage" element={<LandingPage />} />
+            <Route path="codeEditor" element={<TextEditor />} />
           </Routes>
         </BrowserRouter>
       </div>

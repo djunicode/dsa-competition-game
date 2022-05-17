@@ -24,7 +24,14 @@
     "react-scripts": "5.0.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@emotion/style": "^0.8.0",
+    "@monaco-editor/react": "^4.4.5",
+    "formik": "^2.2.9",
+    "framer-motion": "^6.2.8",
+    "monaco-editor": "^0.33.0",
+    "sweetalert2": "^11.4.7",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -61,5 +68,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "prettier": "^2.6.2"
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
