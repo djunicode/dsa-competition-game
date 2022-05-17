@@ -14,7 +14,7 @@ const login = (name, password) => async (dispatch) => {
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
-console.log("redux: " + name, password);
+    console.log('redux: ' + name, password);
     const data = await axios.post(
       url,
       {
@@ -28,11 +28,11 @@ console.log("redux: " + name, password);
       },
     );
 
-    // const reconstructedData = {
-    //   _id: data.data.data.authUser._id,
-    //   name: data.data.data.authUser.name,
-    //   token: data.data.data.authUser.token,
-    // };
+    const reconstructedData = {
+      //   _id: data.data.data.,
+      //   name: data.data.data.authUser.name,
+      token: data.data.data,
+    };
 
     console.log(data);
 
@@ -41,24 +41,24 @@ console.log("redux: " + name, password);
       payload: data,
     });
 
-    // localStorage.setItem(
-    //   'userInfo',
-    //   JSON.stringify(reconstructedData),
-    // );
+    localStorage.setItem(
+      'userInfo',
+      JSON.stringify(reconstructedData),
+    );
 
-    // localforage.setDriver([localforage.INDEXEDDB]);
-    // localforage.setItem(
-    //   'userInfo',
-    //   JSON.stringify(reconstructedData),
-    // );
-    // localforage
-    //   .getItem('userInfo')
-    //   .then((value) => {
-    //     console.log(value);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    localforage.setDriver([localforage.INDEXEDDB]);
+    localforage.setItem(
+      'userInfo',
+      JSON.stringify(reconstructedData),
+    );
+    localforage
+      .getItem('userInfo')
+      .then((value) => {
+        console.log(value);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,

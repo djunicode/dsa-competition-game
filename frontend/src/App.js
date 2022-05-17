@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginScreen from "./screens/LoginScreen";
+import LoginScreen from './screens/LoginScreen';
 
 function App() {
   return (
