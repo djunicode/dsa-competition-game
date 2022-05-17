@@ -11,13 +11,37 @@ import LoginScreen from './screens/LoginScreen';
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Link to="/signup">Signup page</Link>} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <div>
+                    <Link to="/signup">Signup page</Link>
+                  </div>
+                  <div>
+                    <Link to="/landingPage">Landing page</Link>
+                  </div>
+                  <div>
+                    <Link to="/codeEditor">Code Editor page</Link>
+                  </div>
+                  <div>
+                    <Link to="/login">Login page</Link>
+                  </div>
+                  <div>
+                    <CreateRoomModal />
+                  </div>
+                  <div>{/* <JoinRoomModal /> */}</div>
+                </>
+              }
+            />
             <Route path="signup" element={<SignupScreen />} />
-            <Route exact path="/login" element={<><LoginScreen/></>}/>
+            <Route path="landingPage" element={<LandingPage />} />
+            <Route path="codeEditor" element={<TextEditor />} />
+            <Route path="login" element={<LoginScreen />} />
           </Routes>
         </BrowserRouter>
       </div>
