@@ -1,13 +1,9 @@
 {
   "parser": "@babel/eslint-parser",
-<<<<<<< HEAD
   "extends": [
     "airbnb",
     "plugin:prettier/recommended"
   ],
-=======
-  "extends": ["airbnb", "plugin:prettier/recommended"],
->>>>>>> 3fa81085fa7a921e46251921985d79f3acd9e1aa
   "env": {
     "browser": true,
     "es2021": true,

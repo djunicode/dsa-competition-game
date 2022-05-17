@@ -3,45 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.5.3",
     "@mui/styles": "^5.5.3",
     "@reduxjs/toolkit": "^1.8.1",
-=======
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.6.2",
-    "@mui/material": "^5.6.2",
-    "@mui/styles": "^5.6.2",
->>>>>>> 3fa81085fa7a921e46251921985d79f3acd9e1aa
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.26.1",
-<<<<<<< HEAD
-=======
     "copy-to-clipboard": "^3.3.1",
->>>>>>> 3fa81085fa7a921e46251921985d79f3acd9e1aa
     "cra-template": "1.1.3",
     "localforage": "^1.10.0",
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^17.0.2",
-<<<<<<< HEAD
-=======
     "react-hook-form": "^7.29.0",
     "react-icons": "^4.3.1",
->>>>>>> 3fa81085fa7a921e46251921985d79f3acd9e1aa
     "react-redux": "^7.2.8",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.0",
     "redux-devtools-extension": "^2.13.9",
-<<<<<<< HEAD
-=======
     "redux-thunk": "^2.4.1",
->>>>>>> 3fa81085fa7a921e46251921985d79f3acd9e1aa
     "web-vitals": "^2.1.4"
   },
   "scripts": {
