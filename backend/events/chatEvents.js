@@ -5,7 +5,7 @@ const sendMessage = (socket, redisClient) => {
       const redisUsername = usernameMessage[0];
       const redisMessage = usernameMessage[1];
       
-      socket.emit('message', {
+      socket.to(socket.data.roomId).emit('message', {
         from: redisUsername,
         message: redisMessage,
       });

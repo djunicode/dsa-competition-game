@@ -28,8 +28,6 @@ import redisClient from './config/redis.js';
 
 const app = express();
 app.use(morgan('tiny'));
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(cookieSession({ name: 'auth-session', keys: ['key1', 'key2'] }));
 app.use(passport.initialize());
