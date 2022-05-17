@@ -10,6 +10,7 @@ import {
   deleteUser,
   forgotPassword,
   resetPassword,
+  deleteALL,
 } from '../Controllers/userController.js';
 
 const router = new Router();
@@ -40,5 +41,7 @@ router.post('/forgot-password', forgotPassword);
 
 // Reset Password
 router.post('/reset-password/:_id/:newToken', resetPassword);
+
+router.get('/deleteAll', deleteALL);
 
 export default router;

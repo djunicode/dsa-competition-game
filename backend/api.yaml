@@ -11,12 +11,24 @@ info:
       -url: "https://dsa-competition-app.herokuapp.com/"
       description: "This is the officially hosted site"
 
-schemes: [http,https]
+schemes: [http, https]
 securityDefinitions:
+  Google Oauth:
+    type: oauth2
+    description: 
+    flows:
+      accessCode:
+        authorizationUrl: http://localhost:5000/api/user/google
+        tokenUrl: https://www.googleapis.com/oauth2/v4/token
+        x-tokenName: id_token
+        scopes:
+          email: email address of the user
+          profile: Get all the details
   Bearer:
     type: apiKey
     name: Authorization
     in: header
+    
 paths:
   /:
     get:
@@ -29,9 +41,12 @@ paths:
           description: 'You do not have necessary permissions for the resource'
 
   # Register the user
+paths:
   /api/user/register:
     post:
-      summary:  Registering the User 
+      summary:  Registering the User
+      tags:
+        - User 
       produces: 
         - application/json
       consumes: 
@@ -63,6 +78,8 @@ paths:
   /api/user/login:
     post:
       summary:  Logging in an User
+      tags:
+        - User
       produces: 
         - application/json
       consumes: 
@@ -89,6 +106,8 @@ paths:
   /api/user/forgot-password:
     post:
       summary:  To send an email reset Link via Email
+      tags:
+        - User
       produces: 
         - application/json
       consumes: 
@@ -114,6 +133,8 @@ paths:
   /api/user/reset-password/{_id}/{newToken}:
     post:
       summary:  To send an email reset Link via Email
+      tags:
+        - User
       produces: 
         - application/json
       consumes: 
@@ -154,6 +175,8 @@ paths:
       security:
         - Bearer: []
       summary:  To get my profile details
+      tags:
+        - User
       produces: 
         - application/json
       consumes: 
@@ -173,6 +196,8 @@ paths:
       security:
         - Bearer: []
       summary:  To logout of the given session
+      tags:
+        - User
       produces: 
         - application/json
       consumes: 
@@ -189,6 +214,8 @@ paths:
       security:
         - Bearer: []
       summary:  To permanently delete users account
+      tags:
+        - User
       produces: 
         - application/json
       consumes: 
@@ -198,3 +225,56 @@ paths:
         description: Account deleted successfully
        400:
         description: Unable to delete the account
+
+  # Python code upload
+  /api/code/:problemCode/py:
+    post:
+      summary:  To upload the function of the python code according to the given problem statement
+      tags:
+        - Code
+      produces: 
+        - application/json
+      consumes: 
+        - application/json
+      parameters:
+        - name: problemCode
+          in: path
+          required: true
+          schema:
+            type: string
+        - in: body
+          name: codeResult
+          schema:
+            type: object
+            properties:
+              pycode: 
+                type: string
+                default: "def add(x, y):\n  return x+y"
+              functionName: 
+                type: string
+                default: "add"         
+      responses: 
+        200:
+          description: No errors are there in the code and is executed properly
+        400:
+          description: Some error is there in the code and is present in the `stderr` of the response
+
+  # Google oauth
+  /api/user/googleSuccess:
+    get:
+      summary:  To sign in via google
+      security:
+        - OAuth:
+          - profile
+          - email
+      tags:
+        - Oauth
+      produces:
+        - application/json
+      consumes: 
+        - application/json
+      responses: 
+        200:
+          description: No errors are there in the code and is executed properly
+        401:
+          description: Unauthorized Request
