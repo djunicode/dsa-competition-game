@@ -1,0 +1,25 @@
+{
+  "env": {
+    "commonjs": false,
+    "es2021": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": ["airbnb", "prettier", "plugin:node/recommended"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 13
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "off",
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "class-methods-use-this": "off",
+    "endOfLine": "auto"
+  }
+}
