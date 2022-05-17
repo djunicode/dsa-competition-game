@@ -28,8 +28,6 @@ import redisClient from './config/redis.js';
 
 const app = express();
 app.use(morgan('tiny'));
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(cookieSession({ name: 'auth-session', keys: ['key1', 'key2'] }));
 app.use(passport.initialize());
@@ -74,6 +72,7 @@ io.on('connection', (socket, req) => {
   roomEvents(socket, io, redisClient);
   scoreEvents(socket, io, redisClient);
   gameEvents(socket, io, redisClient);
+  chatEvents(socket, io, redisClient);
 });
 
 httpServer.listen(port, () => {
