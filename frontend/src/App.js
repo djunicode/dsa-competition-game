@@ -9,6 +9,31 @@ import CreateRoomModal from './components/CreateRoomModal';
 import JoinRoomModal from './components/JoinRoomModal';
 import LoginScreen from './screens/LoginScreen';
 
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#8985f2',
+    },
+    secondary: {
+      main: '#ff4843',
+    },
+  },
+  typography: {
+    fontFamily: 'Poppins',
+    button: {
+      textTransform: 'none',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: { minWidth: 0 },
+      },
+    },
+  },
+});
+
 function App() {
   return (
     <ThemeProvider theme={lightTheme}>
