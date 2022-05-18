@@ -7,6 +7,7 @@ import LandingPage from './screens/LandingPage';
 import TextEditor from './screens/TextEditor';
 import CreateRoomModal from './components/CreateRoomModal';
 import JoinRoomModal from './components/JoinRoomModal';
+import LoginScreen from './screens/LoginScreen';
 
 const lightTheme = createTheme({
   palette: {
@@ -53,6 +54,9 @@ function App() {
                     <Link to="/codeEditor">Code Editor page</Link>
                   </div>
                   <div>
+                    <Link to="/login">Login page</Link>
+                  </div>
+                  <div>
                     <CreateRoomModal />
                   </div>
                   <div>{/* <JoinRoomModal /> */}</div>
@@ -62,6 +66,7 @@ function App() {
             <Route path="signup" element={<SignupScreen />} />
             <Route path="landingPage" element={<LandingPage />} />
             <Route path="codeEditor" element={<TextEditor />} />
+            <Route path="login" element={<LoginScreen />} />
           </Routes>
         </BrowserRouter>
       </div>

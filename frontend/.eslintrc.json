@@ -1,6 +1,9 @@
 {
   "parser": "@babel/eslint-parser",
-  "extends": ["airbnb", "plugin:prettier/recommended"],
+  "extends": [
+    "airbnb",
+    "plugin:prettier/recommended"
+  ],
   "env": {
     "browser": true,
     "es2021": true,
@@ -37,6 +40,6 @@
       }
     ],
     "react/jsx-props-no-spreading": "off",
-    "requireConfigFile": false
+    "requireConfigFile": "off"
   }
 }
