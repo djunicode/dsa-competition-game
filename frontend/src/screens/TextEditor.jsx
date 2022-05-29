@@ -12,7 +12,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Editor from '@monaco-editor/react';
 
-const TextEditor = () => {
+function TextEditor() {
   const [userCode, setUserCode] = useState(``);
   const [userInput, setUserInput] = useState('');
   const [userOutput, setUserOutput] = useState('');
@@ -21,9 +21,6 @@ const TextEditor = () => {
   const [lang, setLang] = useState('');
   function compile() {
     setLoading(true);
-    if (userCode === ``) {
-      return;
-    }
   }
   function clearOutput() {
     setUserOutput('');
@@ -84,106 +81,98 @@ const TextEditor = () => {
               <Grid container>
                 <Grid item xs={3}>
                   {play ? (
-                    <>
-                      <Button
-                        sx={{
-                          fontSize: '1.1rem',
-                          color: 'black',
-                          fontWeight: '550',
-                          backgroundColor: 'white',
-                          paddingTop: '-1vh',
-                          paddingBottom: '-1vh',
-                          paddingRight: '2vh',
-                          paddingLeft: '2vh',
-                          marginRight: '2vh',
-                          marginTop: '1.5vh',
-                          width: '7rem',
-                          height: '6vh',
-                        }}
-                        onClick={() => {
-                          compile();
-                          setPlay(!play);
-                        }}
-                      >
-                        <PlayArrowIcon /> Run{' '}
-                      </Button>
-                    </>
+                    <Button
+                      sx={{
+                        fontSize: '1.1rem',
+                        color: 'black',
+                        fontWeight: '550',
+                        backgroundColor: 'white',
+                        paddingTop: '-1vh',
+                        paddingBottom: '-1vh',
+                        paddingRight: '2vh',
+                        paddingLeft: '2vh',
+                        marginRight: '2vh',
+                        marginTop: '1.5vh',
+                        width: '7rem',
+                        height: '6vh',
+                      }}
+                      onClick={() => {
+                        compile();
+                        setPlay(!play);
+                      }}
+                    >
+                      <PlayArrowIcon /> Run{' '}
+                    </Button>
                   ) : (
-                    <>
-                      <Button
-                        sx={{
-                          fontSize: '1.1rem',
-                          color: 'black',
-                          fontWeight: '550',
-                          backgroundColor: 'white',
-                          paddingTop: '-1vh',
-                          paddingBottom: '-1vh',
-                          paddingRight: '2vh',
-                          paddingLeft: '2vh',
-                          marginRight: '2vh',
-                          marginTop: '1.5vh',
-                          width: '7rem',
-                          height: '6vh',
-                        }}
-                        disabled
-                      >
-                        <PlayArrowIcon /> Run{' '}
-                      </Button>
-                    </>
+                    <Button
+                      sx={{
+                        fontSize: '1.1rem',
+                        color: 'black',
+                        fontWeight: '550',
+                        backgroundColor: 'white',
+                        paddingTop: '-1vh',
+                        paddingBottom: '-1vh',
+                        paddingRight: '2vh',
+                        paddingLeft: '2vh',
+                        marginRight: '2vh',
+                        marginTop: '1.5vh',
+                        width: '7rem',
+                        height: '6vh',
+                      }}
+                      disabled
+                    >
+                      <PlayArrowIcon /> Run{' '}
+                    </Button>
                   )}
                 </Grid>
                 <Grid item xs={3}>
                   {play ? (
-                    <>
-                      <Button
-                        sx={{
-                          fontSize: '1.1rem',
-                          fontWeight: '550',
-                          color: 'black',
-                          backgroundColor: '#ED6C63',
-                          paddingTop: '-1vh',
-                          paddingBottom: '-1vh',
-                          paddingRight: '2vh',
-                          paddingLeft: '2vh',
-                          marginTop: '1.5vh',
-                          marginRight: '2vh',
-                          width: '7rem',
-                          height: '6vh',
-                        }}
-                        disabled
-                        onClick={() => {
-                          setPlay(!play);
-                        }}
-                      >
-                        <StopIcon style={{ color: 'black' }} />
-                        Stop
-                      </Button>
-                    </>
+                    <Button
+                      sx={{
+                        fontSize: '1.1rem',
+                        fontWeight: '550',
+                        color: 'black',
+                        backgroundColor: '#ED6C63',
+                        paddingTop: '-1vh',
+                        paddingBottom: '-1vh',
+                        paddingRight: '2vh',
+                        paddingLeft: '2vh',
+                        marginTop: '1.5vh',
+                        marginRight: '2vh',
+                        width: '7rem',
+                        height: '6vh',
+                      }}
+                      disabled
+                      onClick={() => {
+                        setPlay(!play);
+                      }}
+                    >
+                      <StopIcon style={{ color: 'black' }} />
+                      Stop
+                    </Button>
                   ) : (
-                    <>
-                      <Button
-                        sx={{
-                          fontSize: '1.1rem',
-                          fontWeight: '550',
-                          color: 'black',
-                          backgroundColor: '#ED6C63',
-                          paddingTop: '-1vh',
-                          paddingBottom: '-1vh',
-                          paddingRight: '2vh',
-                          paddingLeft: '2vh',
-                          marginTop: '1.5vh',
-                          marginRight: '2vh',
-                          width: '7rem',
-                          height: '6vh',
-                        }}
-                        onClick={() => {
-                          setPlay(!play);
-                        }}
-                      >
-                        <StopIcon style={{ color: 'black' }} />
-                        Stop
-                      </Button>
-                    </>
+                    <Button
+                      sx={{
+                        fontSize: '1.1rem',
+                        fontWeight: '550',
+                        color: 'black',
+                        backgroundColor: '#ED6C63',
+                        paddingTop: '-1vh',
+                        paddingBottom: '-1vh',
+                        paddingRight: '2vh',
+                        paddingLeft: '2vh',
+                        marginTop: '1.5vh',
+                        marginRight: '2vh',
+                        width: '7rem',
+                        height: '6vh',
+                      }}
+                      onClick={() => {
+                        setPlay(!play);
+                      }}
+                    >
+                      <StopIcon style={{ color: 'black' }} />
+                      Stop
+                    </Button>
                   )}
                 </Grid>
                 <Grid item xs={3}>
@@ -252,7 +241,7 @@ const TextEditor = () => {
             }}
           />
 
-          {/*<Grid item xs={12} sx={{marginLeft:"-2vh"}}>
+          {/* <Grid item xs={12} sx={{marginLeft:"-2vh"}}>
                         <Grid container>
                             <Grid item xs={6}>
                                 <Grid container>
@@ -299,7 +288,7 @@ const TextEditor = () => {
               padding={1}
               sx={{ textAlign: 'left', fontSize: '1.05rem' }}
             >
-              Q1. You are in charge of the cake for a child's
+              Q1. You are in charge of the cake for a child&apos;s
               birthday. You have decided the cake will have one candle
               for each year of their total age. They will only be able
               to blow out the tallest of the candles. Count how many
@@ -327,7 +316,7 @@ const TextEditor = () => {
                 borderColor: '#6B6DCF',
                 marginTop: '3vh',
               }}
-            ></Grid>
+            />
             <Grid
               item
               xs={12}
@@ -347,9 +336,9 @@ const TextEditor = () => {
               sx={{ textAlign: 'left', fontSize: '1.05rem' }}
             >
               The first line contains a single integer n , the size of
-              candles[]. The second line contains 'n' space-separated
-              integers, where each integer i describes the height of
-              candles[i].
+              candles[]. The second line contains &apos;n&apos;
+              space-separated integers, where each integer i describes
+              the height of candles[i].
             </Grid>
             <Grid
               item
@@ -360,7 +349,7 @@ const TextEditor = () => {
                 borderColor: '#6B6DCF',
                 marginTop: '3vh',
               }}
-            ></Grid>
+            />
             <Grid
               item
               xs={12}
@@ -410,6 +399,6 @@ const TextEditor = () => {
       </Grid>
     </div>
   );
-};
+}
 
 export default TextEditor;

@@ -15,7 +15,7 @@ const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
 };
 
-import { userRegisterReducer } from './reducers/userReducers';
+import userRegisterReducer from './reducers/userReducers';
 
 const reducer = combineReducers({
   userRegister: userRegisterReducer,

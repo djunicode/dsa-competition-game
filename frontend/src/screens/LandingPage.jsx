@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid, Box, Button, TextField } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import axios from 'axios';
+import Cookies from 'universal-cookie';
 
-const LandingPage = () => {
+function LandingPage() {
   const all = [
     { id: 1, score: 78 },
     { id: 2, score: 88 },
@@ -11,6 +13,12 @@ const LandingPage = () => {
     { id: 4, score: 70 },
   ];
   const [login, setLogin] = useState(true);
+
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    console.log(cookies.get('token'));
+  }, []);
 
   return (
     <div
@@ -22,77 +30,73 @@ const LandingPage = () => {
       <Grid container spacing={5}>
         <Grid item xs={12} sx={{ height: '120px' }}>
           {login ? (
-            <>
-              <Grid container padding={2}>
-                <Grid item md={8} xs={6}></Grid>
-                <Grid
-                  item
-                  md={2}
-                  xs={3}
-                  sx={{
-                    textAlign: 'Right',
-                    fontSize: '1.3rem',
-                    fontWeight: '500',
-                    color: 'white',
-                    marginTop: '1.1vh',
-                  }}
-                >
-                  Guest
-                </Grid>
-                <Grid item md={2} xs={3}>
-                  <Button
-                    sx={{
-                      fontSize: '1.1rem',
-                      color: 'white',
-                      backgroundColor: '#8985F2',
-                      paddingTop: '-1vh',
-                      paddingBottom: '-1vh',
-                      paddingRight: '2vh',
-                      paddingLeft: '2vh',
-                      marginTop: '0.5vh',
-                    }}
-                    onClick={() => setLogin(!login)}
-                  >
-                    Login
-                  </Button>
-                </Grid>
+            <Grid container padding={2}>
+              <Grid item md={8} xs={6} />
+              <Grid
+                item
+                md={2}
+                xs={3}
+                sx={{
+                  textAlign: 'Right',
+                  fontSize: '1.3rem',
+                  fontWeight: '500',
+                  color: 'white',
+                  marginTop: '1.1vh',
+                }}
+              >
+                Guest
               </Grid>
-            </>
-          ) : (
-            <>
-              <Grid container padding={2}>
-                <Grid item md={8} xs={4}></Grid>
-                <Grid
-                  item
-                  md={3}
-                  xs={7}
+              <Grid item md={2} xs={3}>
+                <Button
                   sx={{
-                    textAlign: 'Right',
-                    fontSize: '1.3rem',
-                    fontWeight: '500',
+                    fontSize: '1.1rem',
                     color: 'white',
-                    marginTop: '1.2vh',
+                    backgroundColor: '#8985F2',
+                    paddingTop: '-1vh',
+                    paddingBottom: '-1vh',
+                    paddingRight: '2vh',
+                    paddingLeft: '2vh',
+                    marginTop: '0.5vh',
                   }}
+                  onClick={() => setLogin(!login)}
                 >
-                  <Grid container>
-                    <Grid item xs={5}>
-                      <AccountCircleIcon
-                        style={{
-                          width: '37px',
-                          height: '37px',
-                          marginLeft: '25vh',
-                        }}
-                        onClick={() => setLogin(!login)}
-                      />
-                    </Grid>
-                    <Grid item xs={7} sx={{ marginTop: '0.5vh' }}>
-                      Kush Maniar
-                    </Grid>
+                  Login
+                </Button>
+              </Grid>
+            </Grid>
+          ) : (
+            <Grid container padding={2}>
+              <Grid item md={8} xs={4} />
+              <Grid
+                item
+                md={3}
+                xs={7}
+                sx={{
+                  textAlign: 'Right',
+                  fontSize: '1.3rem',
+                  fontWeight: '500',
+                  color: 'white',
+                  marginTop: '1.2vh',
+                }}
+              >
+                <Grid container>
+                  <Grid item xs={5}>
+                    <AccountCircleIcon
+                      style={{
+                        width: '37px',
+                        height: '37px',
+                        marginLeft: '25vh',
+                      }}
+                      onClick={() => setLogin(!login)}
+                    />
+                  </Grid>
+                  <Grid item xs={7} sx={{ marginTop: '0.5vh' }}>
+                    Kush Maniar
                   </Grid>
                 </Grid>
-                <Grid item xs={1}></Grid>
               </Grid>
-            </>
+              <Grid item xs={1} />
+            </Grid>
           )}
         </Grid>
         <Grid
@@ -135,7 +139,7 @@ const LandingPage = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container>
-                    <Grid item xs={1} md={3} sm={3}></Grid>
+                    <Grid item xs={1} md={3} sm={3} />
                     <Grid item xs={10} md={6} sm={6}>
                       <Box
                         sx={{
@@ -180,7 +184,7 @@ const LandingPage = () => {
                         )}
                       </Box>
                     </Grid>
-                    <Grid item xs={1} md={3} sm={3}></Grid>
+                    <Grid item xs={1} md={3} sm={3} />
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
@@ -193,7 +197,7 @@ const LandingPage = () => {
                         borderColor: 'white',
                         marginTop: '3vh',
                       }}
-                    ></Grid>
+                    />
                     <Grid
                       item
                       xs={2}
@@ -213,7 +217,7 @@ const LandingPage = () => {
                         borderColor: 'white',
                         marginTop: '3vh',
                       }}
-                    ></Grid>
+                    />
                   </Grid>
                 </Grid>
                 <Grid
@@ -229,7 +233,7 @@ const LandingPage = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container>
-                    <Grid item xs={1} md={3} sm={3}></Grid>
+                    <Grid item xs={1} md={3} sm={3} />
                     <Grid item xs={10} md={6} sm={6}>
                       <Grid
                         container
@@ -254,10 +258,10 @@ const LandingPage = () => {
                           />
                         </Grid>
                       </Grid>
-                      {/*<Box sx={{backgroundColor:"white" ,textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh"}}>abc-000-xyz
-                    <ArrowForwardIosIcon sx={{marginLeft:"25vh" , paddingTop:"0.5vh"}}/></Box>*/}
+                      {/* <Box sx={{backgroundColor:"white" ,textAlign:"left" , color:"#ABABAB" , fontSize:"1.1rem" , padding:"1.1vh"}}>abc-000-xyz
+                    <ArrowForwardIosIcon sx={{marginLeft:"25vh" , paddingTop:"0.5vh"}}/></Box> */}
                     </Grid>
-                    <Grid item xs={1} md={3} sm={3}></Grid>
+                    <Grid item xs={1} md={3} sm={3} />
                   </Grid>
                 </Grid>
               </Grid>
@@ -305,7 +309,7 @@ const LandingPage = () => {
                               >
                                 Public Room {x.id}
                               </Grid>
-                              <Grid item xs={3}></Grid>
+                              <Grid item xs={3} />
                               <Grid
                                 item
                                 xs={3}
@@ -357,6 +361,6 @@ const LandingPage = () => {
       </Grid>
     </div>
   );
-};
+}
 
 export default LandingPage;

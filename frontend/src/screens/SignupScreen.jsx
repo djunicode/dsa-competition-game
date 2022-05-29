@@ -12,12 +12,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 
+import { useNavigate } from 'react-router-dom';
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
-import { register } from '../actions/userActions';
+import register from '../actions/userActions';
 
 const darkTheme = createTheme({
   palette: {
@@ -59,6 +61,8 @@ function SignupScreen() {
     },
   });
 
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   const userRegister = useSelector((state) => state.userRegister);
@@ -74,6 +78,7 @@ function SignupScreen() {
       return;
     }
     setSnackBools({ ...snackBools, successOpen: false });
+    navigate('/landingPage');
   };
   const handleErorrClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -171,7 +176,7 @@ function SignupScreen() {
                       color="primary"
                       label="Username"
                       id="username"
-                      autoFocus="true"
+                      autoFocus
                       error={errors.username}
                       helperText={
                         errors.username ? 'Username is required' : ' '
@@ -310,7 +315,7 @@ function SignupScreen() {
               >
                 Sign Up With
               </Typography>
-              <a href="/">
+              <a href="http://localhost:5000/api/user/google">
                 <FcGoogle
                   style={{
                     backgroundColor: '#f1f1f1',
@@ -397,7 +402,7 @@ function SignupScreen() {
             sx={{ width: '100%' }}
             onClose={handleErorrClose}
           >
-            {error}
+            {error ? error.message : ''}
           </MuiAlert>
         </Snackbar>
       </Box>
