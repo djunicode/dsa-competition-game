@@ -1,14 +1,11 @@
-import User from '../Model/User.js';
-
 const googleCallback = (req, res) => {
   console.log(req.user);
-
-  res.redirect('/api/user/googleSuccess');
 };
 
 const googleLogout = (req, res) => {
   req.session = null;
   req.logout();
+  res.clearCookie('token');
   res.status(200).json({ message: 'Google logout success' });
 };
 
@@ -17,9 +14,9 @@ const googleFailed = (req, res) => {
 };
 
 const googleSuccess = async (req, res) => {
-  res.status(200).json({
-    ...req.user,
-  });
+  res
+    .cookie('token', req.user.token)
+    .redirect('http://localhost:3000/landingPage');
 };
 
 export { googleCallback, googleLogout, googleFailed, googleSuccess };

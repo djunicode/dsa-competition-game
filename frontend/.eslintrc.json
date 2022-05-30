@@ -40,6 +40,7 @@
       }
     ],
     "react/jsx-props-no-spreading": "off",
-    "requireConfigFile": "off"
+    "requireConfigFile": false,
+    "default-param-last": "off"
   }
 }

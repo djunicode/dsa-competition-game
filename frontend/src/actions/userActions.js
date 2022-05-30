@@ -1,7 +1,9 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'http://dsa-competition-app.herokuapp.com/';
+import Cookies from 'universal-cookie';
 
-export const register = (username, email, password) => async (dispatch) => {
+axios.defaults.baseURL = 'http://localhost:5000/';
+
+export default (username, email, password) => async (dispatch) => {
   try {
     dispatch({
       type: 'USER_REGISTER_REQUEST',
@@ -23,15 +25,12 @@ export const register = (username, email, password) => async (dispatch) => {
       type: 'USER_REGISTER_SUCCESS',
       payload: data,
     });
-
-    localStorage.setItem('userInfo', JSON.stringify(data));
+    const cookies = new Cookies();
+    cookies.set('token', data.data, { path: '/' });
   } catch (error) {
     dispatch({
       type: 'USER_REGISTER_FAIL',
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+      payload: error.response.data,
     });
   }
 };

@@ -7,10 +7,11 @@ import {
   Button,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import background from '../images/background.jpg';
+import React, { useState } from 'react';
+
 import login from '../actions/userAction';
+import background from '../Images/background.jpg';
 
 export default function LoginScreen() {
   const [name, setName] = useState('');

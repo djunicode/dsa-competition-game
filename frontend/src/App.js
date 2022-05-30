@@ -59,7 +59,6 @@ function App() {
                   <div>
                     <CreateRoomModal />
                   </div>
-                  <div>{/* <JoinRoomModal /> */}</div>
                 </>
               }
             />
@@ -67,6 +66,15 @@ function App() {
             <Route path="landingPage" element={<LandingPage />} />
             <Route path="codeEditor" element={<TextEditor />} />
             <Route path="login" element={<LoginScreen />} />
+            <Route
+              path="joinRoom"
+              element={
+                <>
+                  <SignupScreen />
+                  <JoinRoomModal />
+                </>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </div>

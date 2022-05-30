@@ -16,12 +16,12 @@ const registerNewUser = async (req, res) => {
     if (findUser) {
       res.status(409).json({
         success: false,
-        messsage: 'Email already exists,try signing In!',
+        message: 'Email already exists,try signing In!',
       });
     } else if (findUserName) {
       res.status(409).json({
         success: false,
-        messsage: 'UserName already Taken',
+        message: 'UserName already Taken',
       });
     } else {
       const user = new User({ ...req.body });
