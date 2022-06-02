@@ -21,9 +21,15 @@ const roomEvents = (socket, io, redisClient) => {
   };
   preJoinedRoom();
 
-  // expecting {playerLimit: 10,userId: '62710f48fee2c40536fc062a',difficulty: 'Easy',rounds: 6,timeLimitPerQ: 10,additionalInfo: 'Be good in chatRoom'}
-  socket.on('create_room', async (data) => {
+  socket.on('create_room', async () => {
+    console.log('room created');
     const roomId = createRoomString();
+    await socket.emit('return_room_id', { roomId: roomId });
+    socket.data = { roomId: roomId };
+  });
+
+  // expecting {playerLimit: 10,userId: '62710f48fee2c40536fc062a',difficulty: 'Easy',rounds: 6,timeLimitPerQ: 10,additionalInfo: 'Be good in chatRoom'}
+  socket.on('create_room_info', async (data, req) => {
     const userInfo = await User.findById(data.userId);
     const userName = userInfo.username;
     const newData = {
@@ -34,13 +40,21 @@ const roomEvents = (socket, io, redisClient) => {
       rounds: data.rounds,
       timeLimitPerQ: data.timeLimitPerQ,
       additionalInfo: data.additionalInfo,
-      roomId: roomId,
+      roomId: socket.data.roomId,
     };
     socket.data = newData;
     socket.join(socket.data.roomId);
     console.log(socket.data);
     try {
-      await socket.emit('return_room_id', { roomId: socket.data.roomId });
+      await redisClient.set(
+        socket.data.roomId + 'totalRounds',
+        socket.data.rounds
+      );
+      await redisClient.set(
+        socket.data.roomId + 'difficulty',
+        socket.data.difficulty
+      );
+
       await redisClient.set(
         socket.data.roomId + 'playerLimit',
         socket.data.playerLimit
@@ -72,10 +86,7 @@ const roomEvents = (socket, io, redisClient) => {
         arrayOfUser,
       };
       // console.log(roomStatus);
-      io.in(socket.data.roomId).emit(
-        socket.data.userName + 'created the room',
-        roomStatus
-      );
+      io.in(socket.data.roomId).emit('room_status', roomStatus);
     } catch (error) {
       console.log('Create_room');
       console.log(error);

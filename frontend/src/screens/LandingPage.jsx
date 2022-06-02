@@ -4,6 +4,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import userInfo from '../actions/userInfo';
+import { createRoom, joinRoom } from '../actions/roomAction';
 
 function LandingPage() {
   const all = [
@@ -13,11 +17,33 @@ function LandingPage() {
     { id: 4, score: 70 },
   ];
   const [login, setLogin] = useState(true);
-
+  const data = useSelector((state) => state.userInfo);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cookies = new Cookies();
 
-  useEffect(() => {
-    console.log(cookies.get('token'));
+  useEffect(async () => {
+    const token = cookies.get('token');
+
+    if (token) {
+      const headersList = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const reqOptions = {
+        url: 'http://localhost:5000/api/user/me',
+        method: 'GET',
+        headers: headersList,
+      };
+
+      const response = await axios.request(reqOptions);
+      if (response.data.success) {
+        setLogin(!login);
+        dispatch(userInfo(response.data.data));
+        // console.log(response.data.data);
+      }
+    }
+    //
   }, []);
 
   return (
@@ -58,7 +84,7 @@ function LandingPage() {
                     paddingLeft: '2vh',
                     marginTop: '0.5vh',
                   }}
-                  onClick={() => setLogin(!login)}
+                  onClick={() => navigate('/login')}
                 >
                   Login
                 </Button>
@@ -87,11 +113,10 @@ function LandingPage() {
                         height: '37px',
                         marginLeft: '25vh',
                       }}
-                      onClick={() => setLogin(!login)}
                     />
                   </Grid>
                   <Grid item xs={7} sx={{ marginTop: '0.5vh' }}>
-                    Kush Maniar
+                    {data.username}
                   </Grid>
                 </Grid>
               </Grid>
@@ -178,6 +203,7 @@ function LandingPage() {
                               height: '2rem',
                               padding: '1.1vh',
                             }}
+                            onClick={() => dispatch(createRoom(true))}
                           >
                             Create Room
                           </Button>
@@ -248,6 +274,7 @@ function LandingPage() {
                               padding: '1.1vh',
                               height: '1.2rem',
                             }}
+                            onClick={() => dispatch(joinRoom(true))}
                           >
                             abc-000-xyz
                           </TextField>

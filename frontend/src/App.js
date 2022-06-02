@@ -56,17 +56,23 @@ function App() {
                   <div>
                     <Link to="/login">Login page</Link>
                   </div>
-                  <div>
-                    <CreateRoomModal />
-                  </div>
                 </>
               }
             />
             <Route path="signup" element={<SignupScreen />} />
-            <Route path="landingPage" element={<LandingPage />} />
+            <Route
+              path="landingPage"
+              element={
+                <>
+                  <LandingPage />
+                  <CreateRoomModal />
+                  <JoinRoomModal />
+                </>
+              }
+            />
             <Route path="codeEditor" element={<TextEditor />} />
             <Route path="login" element={<LoginScreen />} />
-            <Route
+            {/* <Route
               path="joinRoom"
               element={
                 <>
@@ -74,7 +80,7 @@ function App() {
                   <JoinRoomModal />
                 </>
               }
-            />
+            /> */}
           </Routes>
         </BrowserRouter>
       </div>

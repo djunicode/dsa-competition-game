@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import copy from 'copy-to-clipboard';
 import { Dialog, Box, Typography } from '@mui/material';
@@ -14,11 +14,32 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { MdContentCopy, MdPeopleAlt } from 'react-icons/md';
 import { AiOutlineUserAdd } from 'react-icons/ai';
+import { useSelector, useDispatch } from 'react-redux';
+import io from 'socket.io-client';
+import { createRoom } from '../actions/roomAction';
+
+const socket = io.connect('http://localhost:5000/');
 
 export default function CreateRoomModal() {
-  const roomCode = 'https://gamelink.co.in/id#420?user/';
-  const [open, setOpen] = useState(true);
-  const [difficulty, setDifficulty] = useState('Intermediate');
+  // const roomCode = 'https://gamelink.co.in/id#420?user/';
+  const [roomCode, setRoomCode] = useState('');
+  const open = useSelector((state) => state.createRoom);
+  const user = useSelector((state) => state.userInfo);
+  const { _id } = user;
+  const dispatch = useDispatch();
+  // const [open, setOpen] = useState(true);
+  const [difficultyLvl, setDifficultyLvl] = useState('Intermediate');
+
+  useEffect(() => {
+    if (open) {
+      socket.emit('create_room');
+
+      socket.on('return_room_id', (data) => {
+        setRoomCode(data.roomId);
+        console.log(data.roomId);
+      });
+    }
+  }, [socket, open]);
 
   const {
     handleSubmit,
@@ -26,16 +47,17 @@ export default function CreateRoomModal() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      playersLimit: '',
+      playerLimit: '',
       rounds: '',
-      difficulty,
+      difficulty: difficultyLvl,
       timeLimit: '',
       additionalInfo: '',
     },
   });
 
   const handleDifficulty = (event) => {
-    setDifficulty(event.target.value);
+    console.log(event.target.value);
+    setDifficultyLvl(event.target.value);
   };
 
   const copyToClipboard = () => {
@@ -43,12 +65,35 @@ export default function CreateRoomModal() {
   };
 
   const closeDialoge = () => {
-    setOpen(false);
+    // setOpen(false);
+    dispatch(createRoom(false));
   };
 
   const onSubmit = (data) => {
+    const {
+      playerLimit,
+      difficulty,
+      rounds,
+      timeLimit,
+      additionalInfo,
+    } = data;
     console.log(data);
-    setOpen(false);
+    socket.emit('create_room_info', {
+      playerLimit,
+      userId: { _id },
+      difficulty,
+      rounds,
+      timeLimitPerQ: timeLimit,
+      additionalInfo,
+    });
+
+    socket.on('room_status', (roomStatus) => {
+      console.log(roomStatus);
+    });
+
+    // console.log(data);
+    // setOpen(false);
+    dispatch(createRoom(false));
   };
 
   return (
@@ -154,7 +199,7 @@ export default function CreateRoomModal() {
                   </Box>
                   Player Limit:
                   <Controller
-                    name="playersLimit"
+                    name="playerLimit"
                     control={control}
                     rules={{
                       required: true,
@@ -247,7 +292,7 @@ export default function CreateRoomModal() {
                     render={({ field }) => (
                       <Select
                         id="difficulty"
-                        value={difficulty}
+                        value={difficultyLvl}
                         onChange={handleDifficulty}
                         size="small"
                         sx={{
