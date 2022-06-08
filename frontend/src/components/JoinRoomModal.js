@@ -7,22 +7,25 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { BsPersonCircle } from 'react-icons/bs';
 import { FaChevronRight } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { joinRoom } from '../actions/roomAction';
 
 export default function JoinRoomModal() {
   // Dummy Participants
   const players = ['User 1', 'Player 2', 'Player 3'];
-
+  const open = useSelector((state) => state.joinRoom);
+  const dispatch = useDispatch();
   return (
     <Dialog
-      open
+      open={open}
       BackdropProps={{ style: { backgroundColor: 'unset' } }}
       sx={{
         backdropFilter: 'blur(10px)',
       }}
       PaperProps={{
         sx: {
-          width: '35%',
-          height: '54%',
+          width: '37%',
+          height: '58%',
           borderRadius: '15px',
           boxShadow: 'none',
         },
@@ -257,6 +260,7 @@ export default function JoinRoomModal() {
               marginRight: '15px',
               borderRadius: '5px',
             }}
+            onClick={() => dispatch(joinRoom(false))}
           >
             Cancel
           </Button>

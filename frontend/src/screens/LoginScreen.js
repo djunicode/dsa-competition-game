@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import React, { useState } from 'react';
 
 import login from '../actions/userAction';
-import background from '../Images/background.jpg';
+import background from '../images/background.jpg';
 
 export default function LoginScreen() {
   const [name, setName] = useState('');
@@ -150,7 +150,7 @@ export default function LoginScreen() {
                   </Button>
                 </Box>
                 <Typography style={{ color: 'white' }}>
-                  Don't have and account?{' '}
+                  Dont have and account?{' '}
                   <span
                     style={{ color: '#8985F2', fontWeight: '700' }}
                   >
