@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import SignupScreen from './screens/SignupScreen';
 import LandingPage from './screens/LandingPage';
 import TextEditor from './screens/TextEditor';
@@ -35,6 +36,8 @@ const lightTheme = createTheme({
 });
 
 function App() {
+  const create = useSelector((state) => state.createRoom);
+  const join = useSelector((state) => state.joinRoom);
   return (
     <ThemeProvider theme={lightTheme}>
       <div className="App">
@@ -65,8 +68,8 @@ function App() {
               element={
                 <>
                   <LandingPage />
-                  <CreateRoomModal />
-                  <JoinRoomModal />
+                  {create && <CreateRoomModal />}
+                  {join && <JoinRoomModal />}
                 </>
               }
             />

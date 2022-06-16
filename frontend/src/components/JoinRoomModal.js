@@ -1,20 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import PeopleIcon from '@mui/icons-material/People';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { BsPersonCircle } from 'react-icons/bs';
 import { FaChevronRight } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
-import { joinRoom } from '../actions/roomAction';
+import { useNavigate } from 'react-router-dom';
+import io from 'socket.io-client';
+import { joinRoom, roomInfo } from '../actions/roomAction';
+
+const socket = io.connect('http://localhost:5000/');
 
 export default function JoinRoomModal() {
-  // Dummy Participants
-  const players = ['User 1', 'Player 2', 'Player 3'];
   const open = useSelector((state) => state.joinRoom);
+  const roomId = useSelector((state) => state.joinRoomCode);
+  const room = useSelector((state) => state.roomInfo);
+  const admin = useSelector((state) => state.admin);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.userInfo);
+  const { _id } = user;
+
+  useEffect(() => {
+    if (open) {
+      console.log(roomId);
+      socket.emit('join_room', { userId: _id, roomId });
+
+      socket.on('joinedLobby', (roomStatus) => {
+        console.log('lobby call');
+        if (roomStatus) {
+          dispatch(roomInfo(roomStatus));
+          console.log('user');
+          console.log(room);
+          // setRoomInfo(roomStatus);
+        }
+      });
+    }
+  }, [open]);
+  console.log('inside join room');
+  console.log(admin);
+  console.log(room);
+  const handleCancel = () => {
+    socket.emit('leave_room');
+    dispatch(joinRoom(false));
+  };
+
   return (
     <Dialog
       open={open}
@@ -25,7 +60,7 @@ export default function JoinRoomModal() {
       PaperProps={{
         sx: {
           width: '37%',
-          height: '58%',
+          height: 'auto',
           borderRadius: '15px',
           boxShadow: 'none',
         },
@@ -34,82 +69,56 @@ export default function JoinRoomModal() {
     >
       <Box>
         <Typography
-          variant="h5"
-          component="h2"
+          variant="body1"
+          component="text"
+          align="left"
           sx={{
-            height: '40px',
-            width: '40%',
-            borderRadius: '8.41px',
-            textAlign: 'center',
-            backgroundColor: '#7879F1',
-            color: '#FFFFFF',
-            margin: '24px auto',
-            paddingTop: '10px',
-            fontWeight: '700',
-            lineHeight: '30px',
+            marginTop: '35px',
+            display: 'flex',
+            paddingLeft: '38px',
+            fontSize: '24px',
           }}
         >
-          ☁️ Akatsuki ☁️
+          Host: {room.admin.adminName ? room.admin.adminName : ''}
         </Typography>
-        <Box sx={{ width: '100%', marginBottom: '8px' }}>
-          <Grid container rowSpacing={1}>
-            <Grid item xs={6}>
+        <IconButton
+          sx={{
+            display: 'flex',
+            position: 'absolute',
+            right: '18px',
+            top: '8px',
+          }}
+          onClick={handleCancel}
+        >
+          <CloseIcon fontSize="large" />
+        </IconButton>
+        <Typography
+          sx={{
+            marginLeft: '35px',
+            marginRight: '35px',
+            marginTop: '14px',
+            marginBottom: '25px',
+            fontSize: '14px',
+          }}
+        >
+          Additional Info: {room.additionalInfo}
+        </Typography>
+        <Box
+          sx={{
+            width: '100%',
+            marginBottom: '8px',
+            marginTop: '8px',
+          }}
+        >
+          <Grid container rowSpacing={2}>
+            <Grid item xs={3}>
               <Typography
                 variant="body1"
                 component="text"
                 align="left"
                 sx={{
-                  display: 'flex',
-                  paddingLeft: '30px',
-                  fontSize: '18px',
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: '7px',
-                    paddingBottom: '3px',
-                    fontSize: '22px',
-                  }}
-                >
-                  <BsPersonCircle />
-                </Box>
-                Host: Meet Patel
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography
-                variant="body1"
-                component="text"
-                sx={{
-                  display: 'flex',
-                  paddingLeft: '150px',
-                  fontSize: '17.5px',
-                }}
-              >
-                7/10
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginLeft: '7px',
-                  }}
-                >
-                  <PeopleIcon />
-                </Box>
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography
-                variant="body1"
-                component="text"
-                align="left"
-                sx={{
-                  paddingLeft: '60px',
-                  fontSize: '17.5px',
+                  paddingLeft: '35px',
+                  fontSize: '20px',
                 }}
               >
                 Rounds: 10
@@ -120,11 +129,34 @@ export default function JoinRoomModal() {
                 variant="body1"
                 component="text"
                 sx={{
-                  paddingLeft: '100px',
-                  fontSize: '17.5px',
+                  paddingLeft: '48px',
+                  fontSize: '20px',
                 }}
               >
-                Difficulty: Easy
+                Difficulty: Intermediate
+              </Typography>
+            </Grid>
+            <Grid item xs={3}>
+              <Typography
+                variant="body1"
+                component="text"
+                sx={{
+                  display: 'flex',
+                  paddingLeft: '45px',
+                  fontSize: '20px',
+                }}
+              >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '7px',
+                  }}
+                >
+                  <PeopleIcon />
+                </Box>
+                {room.arrayOfUser.length}/{room.roomMaxLength}
               </Typography>
             </Grid>
           </Grid>
@@ -148,20 +180,16 @@ export default function JoinRoomModal() {
           Players
         </Typography>
         <Box>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-around"
-            alignItems="center"
-          >
-            {players.map((player) => {
+          <Grid container rowSpacing={2} columnSpacing={3}>
+            {room.arrayOfUser.map((player) => {
               return (
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                   <Box
                     sx={{
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      // alignItems: 'center',
+                      // justifyContent: 'center',
+                      paddingLeft: '35px',
                     }}
                   >
                     <Avatar
@@ -178,7 +206,7 @@ export default function JoinRoomModal() {
                         paddingX: '1px',
                       }}
                     >
-                      {player.charAt(0).toUpperCase()}
+                      {player.userName.charAt(0).toUpperCase()}
                     </Avatar>
                     <Typography
                       sx={{
@@ -186,112 +214,116 @@ export default function JoinRoomModal() {
                         fontSize: '14px',
                       }}
                     >
-                      {player}
+                      {player.userName ? player.userName : ''}
                     </Typography>
                   </Box>
                 </Grid>
               );
             })}
-            <Grid item xs={3}>
-              <Button
-                size="small"
-                sx={{
-                  textTransform: 'none',
-                  width: '60%',
-                  color: '#000',
-                  border: ' 1px solid #000',
-                  fontSize: '12px',
-                  lineHeight: '12px',
-                  letterSpacing: '0.5px',
-                  marginLeft: '15px',
-                }}
-              >
-                View All +
-              </Button>
-            </Grid>
           </Grid>
         </Box>
-        <Typography
-          sx={{
-            marginLeft: '35px',
-            marginTop: '15px',
-            marginBottom: '1px',
-            fontSize: '17.5px',
-          }}
-        >
-          Additional Info:
-        </Typography>
-        <Typography
-          sx={{
-            marginLeft: '35px',
-            fontSize: '14px',
-          }}
-        >
-          -Please maintain decorum in the game and avoid use of foul
-          language.
-        </Typography>
-        <Typography
-          sx={{
-            marginLeft: '35px',
-            fontSize: '14px',
-          }}
-        >
-          -This lobby is for Naruto fans who want to master their
-          Jutsus.
-        </Typography>
-        <Box
-          sx={{
-            width: '100%',
-            textAlign: 'center',
-            marginY: '20px',
-          }}
-        >
-          <Button
+        {admin ? (
+          <Box
             sx={{
-              textTransform: 'none',
-              fontSize: '17px',
-              lineHeight: '22px',
-              color: '#8985F2',
-              border: '1px solid ',
-              fontWeight: '600',
-              borderColor:
-                'linear-gradient(90deg, #AF49FF 90%, #8985F2 100%)',
-              width: '30%',
-              marginRight: '15px',
-              borderRadius: '5px',
-            }}
-            onClick={() => dispatch(joinRoom(false))}
-          >
-            Cancel
-          </Button>
-          <Button
-            sx={{
-              textTransform: 'none',
-              fontSize: '17px',
-              lineHeight: '22px',
-              fontWeight: '600',
-              background:
-                'linear-gradient(90deg, rgba(131, 85, 227, 0.85) 0%, rgba(137, 133, 242, 0.85) 100%)',
-              color: '#fff',
-              width: '28%',
-              marginLeft: '15px',
-              paddingLeft: '15px',
-              borderRadius: '5px',
+              width: '100%',
+              textAlign: 'center',
+              marginTop: '20px',
+              marginBottom: '20px',
             }}
           >
-            Join Room
-            <Box
+            <Button
               sx={{
-                display: 'flex',
-                color: 'rgba(69, 68, 135, 0.99)',
-                fontSize: '20px',
-                marginLeft: '10px',
+                textTransform: 'none',
+                fontSize: '17px',
+                lineHeight: '22px',
+                color: '#8985F2',
+                border: '1px solid ',
+                fontWeight: '600',
+                borderColor:
+                  'linear-gradient(90deg, #AF49FF 90%, #8985F2 100%)',
+                width: '30%',
+                marginRight: '15px',
+                borderRadius: '5px',
+              }}
+              onClick={() => navigate('/codeEditor')}
+            >
+              Start
+            </Button>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              width: '100%',
+              textAlign: 'center',
+              marginTop: '20px',
+              marginBottom: '20px',
+            }}
+          >
+            <Typography
+              sx={{
+                // marginLeft: '35px',
+                // marginTop: '7px',
+                // marginBottom: '2px',
+                fontSize: '17.5px',
               }}
             >
-              <FaChevronRight />
-            </Box>
-          </Button>
-        </Box>
+              Waiting for admin to start...
+            </Typography>
+          </Box>
+          /* <Box
+            sx={{
+              width: '100%',
+              textAlign: 'center',
+              marginY: '20px',
+            }}
+          >
+            <Button
+              sx={{
+                textTransform: 'none',
+                fontSize: '17px',
+                lineHeight: '22px',
+                color: '#8985F2',
+                border: '1px solid ',
+                fontWeight: '600',
+                borderColor:
+                  'linear-gradient(90deg, #AF49FF 90%, #8985F2 100%)',
+                width: '30%',
+                marginRight: '15px',
+                borderRadius: '5px',
+              }}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              sx={{
+                textTransform: 'none',
+                fontSize: '17px',
+                lineHeight: '22px',
+                fontWeight: '600',
+                background:
+                  'linear-gradient(90deg, rgba(131, 85, 227, 0.85) 0%, rgba(137, 133, 242, 0.85) 100%)',
+                color: '#fff',
+                width: '28%',
+                marginLeft: '15px',
+                paddingLeft: '15px',
+                borderRadius: '5px',
+              }}
+            >
+              Join Room
+              <Box
+                sx={{
+                  display: 'flex',
+                  color: 'rgba(69, 68, 135, 0.99)',
+                  fontSize: '20px',
+                  marginLeft: '10px',
+                }}
+              >
+                <FaChevronRight />
+              </Box>
+            </Button>
+          </Box> */
+        )}
       </Box>
     </Dialog>
   );
