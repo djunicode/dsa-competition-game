@@ -7,7 +7,11 @@ import Cookies from 'universal-cookie';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import userInfo from '../actions/userInfo';
-import { createRoom, joinRoom } from '../actions/roomAction';
+import {
+  createRoom,
+  joinRoom,
+  joinRoomCode,
+} from '../actions/roomAction';
 
 function LandingPage() {
   const all = [
@@ -17,6 +21,7 @@ function LandingPage() {
     { id: 4, score: 70 },
   ];
   const [login, setLogin] = useState(true);
+  const [joinCode, setJoinCode] = useState('');
   const data = useSelector((state) => state.userInfo);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,11 +45,18 @@ function LandingPage() {
       if (response.data.success) {
         setLogin(!login);
         dispatch(userInfo(response.data.data));
-        // console.log(response.data.data);
+        console.log(response.data.data);
       }
     }
     //
   }, []);
+
+  const handleCode = () => {
+    // console.log(joinCode);
+    dispatch(joinRoomCode(joinCode));
+    setJoinCode('');
+    dispatch(joinRoom(true));
+  };
 
   return (
     <div
@@ -269,19 +281,21 @@ function LandingPage() {
                           <TextField
                             sx={{
                               textAlign: 'left',
-                              color: '#ABABAB',
+                              color: '#000000',
                               fontSize: '1.1rem',
                               padding: '1.1vh',
                               height: '1.2rem',
                             }}
-                            onClick={() => dispatch(joinRoom(true))}
-                          >
-                            abc-000-xyz
-                          </TextField>
+                            value={joinCode}
+                            onChange={(e) =>
+                              setJoinCode(e.target.value)
+                            }
+                          />
                         </Grid>
                         <Grid item xs={2}>
                           <ArrowForwardIosIcon
                             sx={{ paddingTop: '1vh' }}
+                            onClick={handleCode}
                           />
                         </Grid>
                       </Grid>

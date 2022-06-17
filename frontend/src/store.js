@@ -4,7 +4,13 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import userRegisterReducer from './reducers/userReducers';
 import userInfo from './reducers/userInfoReducer';
-import { createRoom, joinRoom } from './reducers/roomReducer';
+import {
+  createRoom,
+  joinRoom,
+  roomInfo,
+  joinRoomCode,
+  admin,
+} from './reducers/roomReducer';
 
 // const reducer = combineReducers({
 //   userLogin: userLoginReducer,
@@ -23,6 +29,9 @@ const reducer = combineReducers({
   userInfo,
   createRoom,
   joinRoom,
+  roomInfo,
+  joinRoomCode,
+  admin,
 });
 
 const middleware = [thunk];

@@ -16,18 +16,23 @@ import { MdContentCopy, MdPeopleAlt } from 'react-icons/md';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useSelector, useDispatch } from 'react-redux';
 import io from 'socket.io-client';
-import { createRoom } from '../actions/roomAction';
+import {
+  createRoom,
+  joinRoom,
+  admin,
+  roomInfo,
+  joinRoomCode,
+} from '../actions/roomAction';
 
 const socket = io.connect('http://localhost:5000/');
 
 export default function CreateRoomModal() {
-  // const roomCode = 'https://gamelink.co.in/id#420?user/';
   const [roomCode, setRoomCode] = useState('');
   const open = useSelector((state) => state.createRoom);
   const user = useSelector((state) => state.userInfo);
   const { _id } = user;
   const dispatch = useDispatch();
-  // const [open, setOpen] = useState(true);
+
   const [difficultyLvl, setDifficultyLvl] = useState('Intermediate');
 
   useEffect(() => {
@@ -56,7 +61,6 @@ export default function CreateRoomModal() {
   });
 
   const handleDifficulty = (event) => {
-    console.log(event.target.value);
     setDifficultyLvl(event.target.value);
   };
 
@@ -65,7 +69,6 @@ export default function CreateRoomModal() {
   };
 
   const closeDialoge = () => {
-    // setOpen(false);
     dispatch(createRoom(false));
   };
 
@@ -87,13 +90,15 @@ export default function CreateRoomModal() {
       additionalInfo,
     });
 
-    socket.on('room_status', (roomStatus) => {
-      console.log(roomStatus);
+    socket.on('joinedLobby', (joinedLobby) => {
+      // console.log('loby');
+      dispatch(roomInfo(joinedLobby));
+      // console.log(joinedLobby);
     });
-
-    // console.log(data);
-    // setOpen(false);
+    dispatch(joinRoomCode(roomCode));
+    dispatch(admin(true));
     dispatch(createRoom(false));
+    dispatch(joinRoom(true));
   };
 
   return (

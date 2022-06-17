@@ -61,8 +61,8 @@ io.adapter(redis({ host: '127.0.0.1', port: 6379 }));
 
 io.on('connection', (socket, req) => {
   console.log('A user connected');
-  // console.log(req.user);
-  socket.data = { userId: '1234' }; // replace with req.user
+  // console.log(req);
+  // socket.data = { userId: '1234' }; // replace with req.user
   roomEvents(socket, io, redisClient);
   scoreEvents(socket, io, redisClient);
   gameEvents(socket, io, redisClient);
