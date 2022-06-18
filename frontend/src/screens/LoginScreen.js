@@ -32,7 +32,7 @@ export default function LoginScreen() {
 
   const useStyles = makeStyles(() => ({
     outerGrid: {
-      width: '150vw',
+      width: '100vw',
       height: '100vh',
       backgroundImage: `url(${background})`,
       backgroundPosition: 'center',
