@@ -133,12 +133,12 @@ function LoginScreen() {
           sx={{
             backgroundColor: 'rgb(255, 255, 255, 0.1)',
             borderRadius: '7px',
-            width: matchesM ? '56rem' : matchesS ? '37rem' : '88%',
-            height: matchesM ? '38rem' : '42rem',
+            width: matchesM ? '40rem' : matchesS ? '40rem' : '45%',
+            height: matchesM ? '30rem' : matchesS? '30rem' : '20rem',
             textAlign: 'center',
             backdropFilter: 'blur(57.4px)',
-            paddingBottom: matchesM ? '' : '0.7rem',
-            margin: matchesM ? '' : '2rem 0',
+            paddingBottom: matchesM ? '0.3' : '0.8rem',
+            margin: matchesM ? '2rem 0' : '4rem 0',
           }}
         >
           <Typography
@@ -147,7 +147,7 @@ function LoginScreen() {
               fontSize: '2.3rem',
               color: '#8985F2',
               fontWeight: '700',
-              margin: '2rem 0',
+              margin: '1.5rem 0',
             }}
           >
             LOGIN
@@ -155,11 +155,9 @@ function LoginScreen() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid
               container
-              sx={{ mt: 2, px: matchesS ? 7 : 1 }}
-              direction="row"
-              justifyContent="space-around"
+              direction="column"
+              justifyContent="space-evenly"
               alignItems="center"
-              spacing={matchesM ? 4 : 2}
             >
               <Grid item md={6} sm={12}>
                 <Controller
@@ -210,14 +208,14 @@ function LoginScreen() {
                 />
               </Grid>
             </Grid>
-            <Box sx={{ m: matchesS ? 4 : 2, mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
               <Box
                 sx={{
                   height: '4px',
                   backgroundColor: '#f1f1f1',
-                  width: matchesS ? '6.3rem' : '4.5rem',
+                  width: matchesS ? '6.3rem' : '1rem',
                   display: 'inline-block',
-                  margin: '0 1rem 0.3rem',
+                  margin: '0 0.5rem 0rem',
                   borderRadius: '2.5px',
                 }}
               />
@@ -237,7 +235,7 @@ function LoginScreen() {
                   backgroundColor: '#f1f1f1',
                   width: matchesS ? '6.3rem' : '4.5rem',
                   display: 'inline-block',
-                  margin: '0 1rem 0.3rem',
+                  margin: '0 0.5rem 0rem',
                   borderRadius: '2.5px',
                 }}
               />
@@ -245,7 +243,7 @@ function LoginScreen() {
             <Box
               sx={{
                 m: 2,
-                marginBottom: '1.5rem',
+                marginBottom: '0.5rem',
                 display: 'flex',
                 position: 'relative',
                 justifyContent: 'center',
@@ -296,11 +294,11 @@ function LoginScreen() {
             >
               <Button
                 variant="contained"
-                size="large"
+                size="matchesS? small :large"
                 color="primary"
                 fullWidth
                 type="submit"
-                style={{ fontSize: '1.3rem', fontWeigth: '600' }}
+                style={{ fontSize: '1.3rem', fontWeight: '600' }}
               >
                 Login
               </Button>
