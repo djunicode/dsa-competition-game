@@ -1,24 +1,20 @@
 import axios from 'axios';
-import Cookies from 'universal-cookie';
-import { useNavigate } from 'react-router-dom';
 import {
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
 } from '../constants/userConstants';
 
-const url = 'http://localhost:5000//api/user/login';
-
-const login = (name, password) => async (dispatch) => {
-  const navigate = useNavigate();
+const url = 'http://localhost:5000/api/user/login';
+const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
-    // console.log('redux: ' + name + password);
+    console.log('redux: ' + email + password);
     const data = await axios.post(
       url,
-      { name, password },
+      { email, password },
       {
         headers: {
           'Content-Type': 'application/json',
@@ -32,12 +28,13 @@ const login = (name, password) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: data,
     });
-    const cookies = new Cookies();
-    cookies.set('token', data.data, { path: '/' });
+    localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
-      payload: error.response.data,
+      payload: error.response && error.response.data.errors[0].message
+        ? error.response.data.errors[0].message
+        : error.message,
     });
   }
 };

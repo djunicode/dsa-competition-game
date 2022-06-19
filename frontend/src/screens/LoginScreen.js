@@ -18,7 +18,7 @@ import login from '../actions/userAction';
 import background from '../images/background.jpg';
 
 export default function LoginScreen() {
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
@@ -47,9 +47,9 @@ export default function LoginScreen() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (name !== undefined || password !== undefined) {
-      console.log(name, password);
-      dispatch(login(name, password));
+    if (email !== undefined || password !== undefined) {
+      console.log(email, password);
+      dispatch(login(email, password));
     }
   };
 
@@ -61,6 +61,7 @@ export default function LoginScreen() {
       setSnackBools({ ...snackBools, successOpen: true });
     }
   }, [error, userInfo]);
+
 
   const useStyles = makeStyles(() => ({
     outerGrid: {
@@ -135,14 +136,14 @@ export default function LoginScreen() {
                     justifyContent="flex-start"
                     alignItems="flex-start"
                   >
-                    <label htmlFor="name" style={{ color: 'white' }}>
-                      Username
+                    <label htmlFor="email" style={{ color: 'white' }}>
+                      Email
                     </label>
                     <input
-                      type="name"
-                      id="name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       style={{ height: '40px', width: '300px' }}
                     />
                   </Grid>
@@ -206,7 +207,7 @@ export default function LoginScreen() {
           sx={{ width: '100%' }}
           onClose={handleSuccessClose}
         >
-          User successfully registered!
+          User successfully logged in!
         </MuiAlert>
       </Snackbar>
       <Snackbar
