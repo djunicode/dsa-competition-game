@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   Box,
@@ -7,8 +8,11 @@ import {
   Button,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { useDispatch } from 'react-redux';
-import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 import login from '../actions/userAction';
 import background from '../images/background.jpg';
@@ -17,10 +21,29 @@ export default function LoginScreen() {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const userLogin = useSelector((state) => state.userLogin);
-  // const { loading, error, userInfo } = userLogin;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo } = userLogin;
+
+  const [snackBools, setSnackBools] = useState({
+    successOpen: false,
+    errorOpen: false,
+  });
+  const handleSuccessClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBools({ ...snackBools, successOpen: false });
+    navigate('/landingPage');
+  };
+  const handleErorrClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBools({ ...snackBools, errorOpen: false });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,6 +52,15 @@ export default function LoginScreen() {
       dispatch(login(name, password));
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      setSnackBools({ ...snackBools, errorOpen: true });
+    }
+    if (userInfo) {
+      setSnackBools({ ...snackBools, successOpen: true });
+    }
+  }, [error, userInfo]);
 
   const useStyles = makeStyles(() => ({
     outerGrid: {
@@ -154,7 +186,9 @@ export default function LoginScreen() {
                   <span
                     style={{ color: '#8985F2', fontWeight: '700' }}
                   >
-                    Sign Up
+                    <Link style={{ textDecoration: 'none' }} to="/signup">
+                      Sign Up
+                    </Link>
                   </span>
                 </Typography>
               </Grid>
@@ -162,6 +196,32 @@ export default function LoginScreen() {
           </Card>
         </Box>
       </div>
+      <Snackbar
+        open={snackBools.successOpen}
+        autoHideDuration={3000}
+        onClose={handleSuccessClose}
+      >
+        <MuiAlert
+          severity="success"
+          sx={{ width: '100%' }}
+          onClose={handleSuccessClose}
+        >
+          User successfully registered!
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar
+        open={snackBools.errorOpen}
+        autoHideDuration={3000}
+        onClose={handleErorrClose}
+      >
+        <MuiAlert
+          severity="error"
+          sx={{ width: '100%' }}
+          onClose={handleErorrClose}
+        >
+          {error ? error.message : ''}
+        </MuiAlert>
+      </Snackbar>
     </Grid>
   );
 }
