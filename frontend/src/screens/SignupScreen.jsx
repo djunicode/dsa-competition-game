@@ -78,7 +78,7 @@ function SignupScreen() {
       return;
     }
     setSnackBools({ ...snackBools, successOpen: false });
-    navigate('/landingPage');
+    navigate('/login');
   };
   const handleErorrClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -366,7 +366,7 @@ function SignupScreen() {
             }}
           >
             Already have an account?{' '}
-            <a href="/">
+            <a href="/login">
               <Typography
                 color="primary"
                 style={{
