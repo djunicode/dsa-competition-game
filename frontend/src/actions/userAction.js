@@ -1,70 +1,36 @@
 import axios from 'axios';
-// import localforage from 'localforage';
-import {
-  USER_LOGIN_FAIL,
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
-} from '../constants/userConstants';
+import Cookies from 'universal-cookie';
 
-const url =
-  'https://dsa-competition-app.herokuapp.com/api/user/login/';
+axios.defaults.baseURL = 'http://localhost:5000/';
 
-const login = (name, password) => async (dispatch) => {
+export default (email, password) => async (dispatch) => {
   try {
     dispatch({
       type: 'USER_LOGIN_REQUEST',
     });
-    // console.log('redux: ' + name + password);
-    const data = await axios.post(
-      url,
-      { name, password },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
       },
+    };
+
+    const { data } = await axios.post(
+      'api/user/login',
+      { email, password },
+      config,
     );
 
-    // const reconstructedData = {
-    //   //   _id: data.data.data.,
-    //   //   name: data.data.data.authUser.name,
-    //   token: data.data.data,
-    // };
-
-    console.log(data);
-
     dispatch({
-      type: USER_LOGIN_SUCCESS,
+      type: 'USER_LOGIN_SUCCESS',
       payload: data,
     });
-
-    // localStorage.setItem(
-    //   'userInfo',
-    //   JSON.stringify(reconstructedData),
-    // );
-
-    // localforage.setDriver([localforage.INDEXEDDB]);
-    // localforage.setItem(
-    //   'userInfo',
-    //   JSON.stringify(reconstructedData),
-    // );
-    // localforage
-    //   .getItem('userInfo')
-    //   .then((value) => {
-    //     console.log(value);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    const cookies = new Cookies();
+    cookies.set('token', data.data, { path: '/' });
   } catch (error) {
     dispatch({
-      type: USER_LOGIN_FAIL,
-      payload:
-        error.response && error.response.data.errors[0].message
-          ? error.response.data.errors[0].message
-          : error.message,
+      type: 'USER_LOGIN_FAIL',
+      payload: error.response.data,
     });
   }
 };
-
-export default login;
