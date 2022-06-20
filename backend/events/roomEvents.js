@@ -29,6 +29,7 @@ const roomEvents = (socket, io, redisClient) => {
 
   // expecting {playerLimit: 10,userId: '62710f48fee2c40536fc062a',difficulty: 'Easy',rounds: 6,timeLimitPerQ: 10,additionalInfo: 'Be good in chatRoom'}
   socket.on('create_room_info', async (data, req) => {
+    console.log(socket.data);
     const userInfo = await User.findById(data.userId._id);
     const userName = userInfo.username;
     const newData = {
@@ -99,6 +100,8 @@ const roomEvents = (socket, io, redisClient) => {
         additionalInfo: socket.data.additionalInfo,
       };
       console.log(roomStatus);
+      console.log('createRoom,socket.data ');
+      console.log(socket.data);
       io.sockets.in(socket.data.roomId).emit('joinedLobby', roomStatus);
     } catch (error) {
       console.log('Create_room erroe');
@@ -168,7 +171,7 @@ const roomEvents = (socket, io, redisClient) => {
         additionalInfo,
       };
       console.log(roomStatus);
-      console.log('joinRoom');
+      console.log('joinRoom,socket.data ');
       console.log(socket.data);
 
       io.sockets.to(socket.data.roomId).emit('joinedLobby', roomStatus);
@@ -230,33 +233,31 @@ const roomEvents = (socket, io, redisClient) => {
 
   socket.on('leave_room', async () => {
     try {
-      console.log('leave starts');
-      console.log(socket.data);
-      let arrayOfUser = [];
+      let arrayOfUser;
+      console.log('Leave starts here');
       const currUser = JSON.stringify({
         userName: socket.data.userName,
         userId: socket.data.userId,
       });
       await redisClient.lrem(socket.data.roomId + 'members', 1, currUser);
-      await redisClient.del(socket.data.userId + 'CurrentlyIn');
       const currentUsersLen = await redisClient.llen(
         socket.data.roomId + 'members'
       );
+      await redisClient.del(socket.data.userId + 'CurrentlyIn');
       if (currentUsersLen !== 0) {
-        let adminId = await redisClient.get(socket.data.roomId + 'admin');
+        let adminId = await redisClient.get(socket.data.roomId + 'adminId');
+        console.log('Checking admin id');
+        console.log(adminId);
         if (adminId !== socket.data.userId) {
-          // socket
-          //   .to(socket.data.roomId)
-          //   .emit(socket.data.roomId + ' has left the lobby');
           socket.leave(socket.data.roomId);
         } else {
-          // socket.to(socket.data.roomId).emit('Admin has left the chat');
+          socket.leave(socket.data.roomId);
           const participantsLeft = await redisClient.lrange(
             socket.data.roomId + 'members',
             0,
             -1
           );
-          arrayOfUser = participantsLeft(JSON.parse);
+          arrayOfUser = participantsLeft.map(JSON.parse);
           await redisClient.set(
             socket.data.roomId + 'adminId',
             arrayOfUser[0].userId
@@ -265,12 +266,7 @@ const roomEvents = (socket, io, redisClient) => {
             socket.data.roomId + 'adminName',
             arrayOfUser[0].userName
           );
-          socket
-            .to(socket.data.roomId)
-            .emit(currParticipants[0] + ' is now the admin');
-          socket.leave(socket.data.roomId);
         }
-        console.log(socket.data.userName + 'leave');
         const roomMaxLength = await redisClient.get(
           socket.data.roomId + 'playerLimit'
         );
@@ -280,16 +276,24 @@ const roomEvents = (socket, io, redisClient) => {
         const currentUsers = await redisClient.llen(
           socket.data.roomId + 'members'
         );
+        const memberAfterRem = await redisClient.lrange(
+          socket.data.roomId + 'members',
+          0,
+          -1
+        );
+        const newcurrentUsers = memberAfterRem.map(JSON.parse);
         const roomStatus = {
+          admin: { adminId: adminId, adminName: adminName },
+          arrayOfUser: newcurrentUsers,
           roomMaxLength,
           currentUsers, // Currently total no of users in room
-          admin: { adminId: adminId, adminName: adminName },
-          arrayOfUser,
         };
-        console.log('check');
         console.log(roomStatus);
         io.to(socket.data.roomId).emit('joinedLobby', roomStatus);
       } else {
+        console.log(
+          'No one left inside this room and hence permanently deleted the room'
+        );
         await redisClient.del(socket.data.roomId + 'length');
         await redisClient.del(socket.data.roomId + 'admin');
         await redisClient.del(socket.data.roomId + 'members');
@@ -302,69 +306,77 @@ const roomEvents = (socket, io, redisClient) => {
 
   socket.on('disconnect', async () => {
     try {
-      let arrayOfUser;
-      console.log('Disconnect starts here');
-      console.log(socket.data.userName);
-      const currUser = JSON.stringify({
-        userName: socket.data.userName,
-        userId: socket.data.userId,
-      });
-      await redisClient.lrem(socket.data.roomId + 'members', 1, currUser);
-      const currentUsersLen = await redisClient.llen(
-        socket.data.roomId + 'members'
-      );
-      if (currentUsersLen !== 0) {
-        let adminId = await redisClient.get(socket.data.roomId + 'admin');
-        if (adminId !== socket.data.userId) {
-          // socket
-          //   .to(socket.data.roomId)
-          //   .emit(socket.data.roomId + ' has left the lobby');
-          socket.leave(socket.data.roomId);
-        } else {
-          // socket.to(socket.data.roomId).emit('Admin has left the chat');
-          const participantsLeft = await redisClient.lrange(
+      if (socket.data.userId === undefined) {
+        console.log(
+          'This is not a login and signup wala banda who started playing game'
+        );
+      } else {
+        let arrayOfUser;
+        console.log('Disconnect starts here');
+        const currUser = JSON.stringify({
+          userName: socket.data.userName,
+          userId: socket.data.userId,
+        });
+        await redisClient.lrem(socket.data.roomId + 'members', 1, currUser);
+        const currentUsersLen = await redisClient.llen(
+          socket.data.roomId + 'members'
+        );
+        if (currentUsersLen !== 0) {
+          let adminId = await redisClient.get(socket.data.roomId + 'adminId');
+          console.log('Checking admin id');
+          console.log(adminId);
+          if (adminId !== socket.data.userId) {
+            socket.leave(socket.data.roomId);
+          } else {
+            socket.leave(socket.data.roomId);
+            const participantsLeft = await redisClient.lrange(
+              socket.data.roomId + 'members',
+              0,
+              -1
+            );
+            arrayOfUser = participantsLeft.map(JSON.parse);
+            await redisClient.set(
+              socket.data.roomId + 'adminId',
+              arrayOfUser[0].userId
+            );
+            await redisClient.set(
+              socket.data.roomId + 'adminName',
+              arrayOfUser[0].userName
+            );
+          }
+          const roomMaxLength = await redisClient.get(
+            socket.data.roomId + 'playerLimit'
+          );
+          adminId = await redisClient.get(socket.data.roomId + 'adminId');
+          const thisUser = await User.findById(adminId);
+          const adminName = thisUser.username;
+          const currentUsers = await redisClient.llen(
+            socket.data.roomId + 'members'
+          );
+          const memberAfterRem = await redisClient.lrange(
             socket.data.roomId + 'members',
             0,
             -1
           );
-          arrayOfUser = participantsLeft(JSON.parse);
-          await redisClient.set(
-            socket.data.roomId + 'adminId',
-            arrayOfUser[0].userId
+          const newcurrentUsers = memberAfterRem.map(JSON.parse);
+          const roomStatus = {
+            admin: { adminId: adminId, adminName: adminName },
+            arrayOfUser: newcurrentUsers,
+            roomMaxLength,
+            currentUsers, // Currently total no of users in room
+          };
+          console.log(roomStatus);
+          io.to(socket.data.roomId).emit('joinedLobby', roomStatus);
+        } else {
+          console.log(
+            'No one left inside this room and hence permanently deleted the room'
           );
-          await redisClient.set(
-            socket.data.roomId + 'adminName',
-            arrayOfUser[0].userName
-          );
-          socket
-            .to(socket.data.roomId)
-            .emit(currParticipants[0] + ' is now the admin');
-          socket.leave(socket.data.roomId);
+          await redisClient.del(socket.data.roomId + 'length');
+          await redisClient.del(socket.data.roomId + 'admin');
+          await redisClient.del(socket.data.roomId + 'members');
         }
-        const roomMaxLength = await redisClient.get(
-          socket.data.roomId + 'playerLimit'
-        );
-        adminId = await redisClient.get(socket.data.roomId + 'adminId');
-        const thisUser = await User.findById(adminId);
-        const adminName = thisUser.username;
-        const currentUsers = await redisClient.llen(
-          socket.data.roomId + 'members'
-        );
-        const roomStatus = {
-          roomMaxLength,
-          currentUsers, // Currently total no of users in room
-          admin: { adminId: adminId, adminName: adminName },
-          arrayOfUser,
-        };
-        console.log('disconnected');
-        io.to(socket.data.roomId).emit('joinedLobby', roomStatus);
-      } else {
-        await redisClient.del(socket.data.roomId + 'length');
-        await redisClient.del(socket.data.roomId + 'admin');
-        await redisClient.del(socket.data.roomId + 'members');
       }
     } catch (error) {
-      console.log('Disconnect room error');
       console.log(error);
     }
   });

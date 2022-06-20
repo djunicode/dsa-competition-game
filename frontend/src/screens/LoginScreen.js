@@ -9,9 +9,9 @@ import {
 import { makeStyles } from '@mui/styles';
 import { useDispatch } from 'react-redux';
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import login from '../actions/userAction';
-import background from '../images/background.jpg';
 
 export default function LoginScreen() {
   const [name, setName] = useState('');
@@ -34,7 +34,7 @@ export default function LoginScreen() {
     outerGrid: {
       width: '150vw',
       height: '100vh',
-      backgroundImage: `url(${background})`,
+      backgroundImage: `url(/images/background.png)`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
@@ -151,11 +151,12 @@ export default function LoginScreen() {
                 </Box>
                 <Typography style={{ color: 'white' }}>
                   Dont have and account?{' '}
-                  <span
+                  <Link
+                    to="/signup"
                     style={{ color: '#8985F2', fontWeight: '700' }}
                   >
                     Sign Up
-                  </span>
+                  </Link>
                 </Typography>
               </Grid>
             </CardContent>

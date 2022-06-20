@@ -366,7 +366,7 @@ function SignupScreen() {
             }}
           >
             Already have an account?{' '}
-            <a href="/">
+            <a href="/login">
               <Typography
                 color="primary"
                 style={{
