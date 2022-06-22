@@ -18,20 +18,40 @@ const scoreEvents = (socket, io, redisClient) => {
       points,
       socket.data.userId
     );
+    // // returning next q or returning end of question
+    // const problemsSeq = await redisClient.get('arrayOfProblems');
+    // const arrayProblemSeq = JSON.parse(problemsSeq);
+    // const index = await arrayProblemSeq.indexOf(data.problemId);
+    // console.log(index);
+    // if (index === arrayProblemSeq.length - 1) {
+    //   socket.emit('problems_completed');
+    // } else {
+    //   const nextQIndex = index + 1;
+    //   const newProblem = await redisClient.get(
+    //     socket.data.roomId + 'problem' + nextQIndex + 1
+    //   );
+    //   socket.emit('question', newProblem);
+    // }
+  });
 
-    // returning next q or returning end of question
-    const problemsSeq = await redisClient.get('arrayOfProblems');
-    const arrayProblemSeq = JSON.parse(problemsSeq);
-    const index = await arrayProblemSeq.indexOf(data.problemId);
-    console.log(index);
-    if (index === arrayProblemSeq.length - 1) {
-      socket.emit('problems_completed');
+  socket.on('game_completed_by_user', async (data) => {
+    const totalCompleted = await redisClient.get(
+      socket.data.roomId + 'totalGameCompleted'
+    );
+    const intOfTotal = parseInt(totalCompleted);
+    intOfTotal++;
+    const totalUsers = await redisClient.get(
+      socket.data.roomId + 'totalUsersAtStart'
+    );
+    const intTotalUsers = parseInt(totalUsers);
+    if (intOfTotal === intTotalUsers) {
+      io.sockets.in(socket.data.roomId).emit('everyoneCompleted');
+      // expecting socket.emit('end_game' from admin)
     } else {
-      const nextQIndex = index + 1;
-      const newProblem = await redisClient.get(
-        socket.data.roomId + 'problem' + nextQIndex + 1
+      await redisClient.set(
+        socket.data.roomId + 'totalGameCompleted',
+        intOfTotal
       );
-      socket.emit('question', newProblem);
     }
   });
 };
