@@ -45,7 +45,7 @@ const gameEvents = (socket, io, redisClient) => {
       );
 
       // Shuffling the array
-      const returnedArr = shuffle(array);
+      const returnedArr = shuffle(arrByDiff);
 
       // Slicing the shuffled array
       const reqArrProblems = returnedArr.slice(0, totalRounds);
@@ -67,7 +67,7 @@ const gameEvents = (socket, io, redisClient) => {
       // Setting leaderboard scores as zero
       for (let i = 0; i < arrayOfUser.length; i++) {
         await redisClient.zadd(
-          data.socket.roomId + 'leaderBoard',
+          socket.data.roomId + 'leaderBoard',
           0,
           arrayOfUser[i]
         );

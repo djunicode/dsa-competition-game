@@ -4,7 +4,8 @@ const router = Router();
 
 // router.get('/:problemCode', getProblem);
 
-router.post('/:problemCode/py', runCodePy);
-router.post('/:problemCode/cpp', runCodeCpp);
+router.post('/:problemId/py', runCodePy);
+// Not working in cpp till now 
+// router.post('/:problemCode/cpp', runCodeCpp);
 
 export default router;

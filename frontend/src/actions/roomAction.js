@@ -26,6 +26,13 @@ export const roomInfo = (val) => {
   };
 };
 
+export const updateRoomInfo = (val) => {
+  return {
+    type: 'UPDATE_ROOM_INFO',
+    payload: val,
+  };
+};
+
 export const admin = (val) => {
   return {
     type: 'ADMIN',

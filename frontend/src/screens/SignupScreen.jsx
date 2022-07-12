@@ -78,7 +78,7 @@ function SignupScreen() {
       return;
     }
     setSnackBools({ ...snackBools, successOpen: false });
-    navigate('/login');
+    navigate('/landingPage');
   };
   const handleErorrClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -394,7 +394,7 @@ function SignupScreen() {
         </Snackbar>
         <Snackbar
           open={snackBools.errorOpen}
-          autoHideDuration={3000}
+          autoHideDuration={1000}
           onClose={handleErorrClose}
         >
           <MuiAlert
