@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Grid,
   Box,
@@ -6,25 +6,98 @@ import {
   TextField,
   Select,
   MenuItem,
+  Typography,
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Editor from '@monaco-editor/react';
+import { useSelector, useDispatch } from 'react-redux';
+import CircularProgress from '@mui/material/CircularProgress';
+
+import axios from 'axios';
 
 function TextEditor() {
-  const [userCode, setUserCode] = useState(``);
+  const state = useSelector((state) => state);
+
+  const { gameInfo } = state;
+
+  const functionName = 'test';
+  // Maybe use redux to manage all these states...
+  const [userCode, setUserCode] = useState(`def ${functionName}`);
   const [userInput, setUserInput] = useState('');
   const [userOutput, setUserOutput] = useState('');
   const [loading, setLoading] = useState(false);
   const [play, setPlay] = useState(true);
-  const [lang, setLang] = useState('');
-  function compile() {
-    setLoading(true);
-  }
+  const [lang, setLang] = useState('python');
+  const [data, setData] = useState({
+    isPresent: false,
+    value: {},
+    isError: false,
+  });
+  const [statusOfCode, setStatusOfCode] = useState(false);
   function clearOutput() {
     setUserOutput('');
   }
+  // console.log(
+  //   data.isPresent &&
+  //     data.value.stdout
+  //       .substr(1, data.value.stdout.length - 2)
+  //       .split(','),
+  // );
+  useEffect(() => {
+    if (data.isPresent) {
+      let count = 0;
+      data.value.stdout
+        .substr(1, data.value.stdout.length - 2)
+        .split(',')
+        .map(Number)
+        .forEach((val) => {
+          if (val === 1) {
+            count++;
+          }
+        });
+      if (
+        data.value.stdout
+          .substr(1, data.value.stdout.length - 2)
+          .split(',')
+          .map(Number).length === count
+      ) {
+        setStatusOfCode(true);
+      }
+    }
+  }, []);
+  const handleRun = async () => {
+    console.log(userCode);
+    setLoading(true);
+    // FOR FUTURE USE WITH REDUX
+    // let res = await axios.post(`/api/code/${gameInfo.questions.data[gameInfo.currentQuestion]._id}/py`);
+    setPlay(false);
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/code/62cd80b3717ae0f6aebb895b/py',
+        {
+          functionName,
+          pycode: userCode.replace(/\\n/g, '\n'),
+        },
+      );
+      const { data } = res;
+      console.log(data);
+      setData({
+        isPresent: true,
+        value: data.result.run,
+        isError: false,
+      });
+    } catch (err) {
+      console.log(err.response);
+      setData({
+        isPresent: true,
+        value: err.response.data.result.run,
+        isError: true,
+      });
+    }
+    setLoading(false);
+  };
   return (
     <div
       style={{
@@ -61,18 +134,26 @@ function TextEditor() {
                   height: '6vh',
                 }}
               >
-                <MenuItem key="C" value="c">
+                <MenuItem key="C" value="c" sx={{ disabled: 'true' }}>
                   {' '}
                   C{' '}
                 </MenuItem>
-                <MenuItem key="cpp" value="cpp">
+                <MenuItem
+                  key="cpp"
+                  value="cpp"
+                  sx={{ disabled: 'true' }}
+                >
                   {' '}
                   C++{' '}
                 </MenuItem>
                 <MenuItem key="python" value="python">
                   Python
                 </MenuItem>
-                <MenuItem key="java" value="java">
+                <MenuItem
+                  key="java"
+                  value="java"
+                  sx={{ disabled: 'true' }}
+                >
                   Java
                 </MenuItem>
               </Select>
@@ -96,10 +177,7 @@ function TextEditor() {
                         width: '7rem',
                         height: '6vh',
                       }}
-                      onClick={() => {
-                        compile();
-                        setPlay(!play);
-                      }}
+                      onClick={handleRun}
                     >
                       <PlayArrowIcon /> Run{' '}
                     </Button>
@@ -125,7 +203,7 @@ function TextEditor() {
                     </Button>
                   )}
                 </Grid>
-                <Grid item xs={3}>
+                {/* <Grid item xs={3}>
                   {play ? (
                     <Button
                       sx={{
@@ -195,7 +273,7 @@ function TextEditor() {
                     Submit
                   </Button>
                   <br />
-                </Grid>
+                </Grid> */}
                 <Grid
                   item
                   xs={3}
@@ -230,16 +308,78 @@ function TextEditor() {
           </Grid>
         </Grid>
         <Grid item xs={12} sm={8} md={8}>
-          <Editor
-            language={lang}
-            theme="vs-dark"
-            defaultLanguage="java"
-            defaultValue="# Enter your code here"
-            width="97%"
-            onChange={(value) => {
-              setUserCode(value);
-            }}
-          />
+          {loading ? (
+            <Box margin="auto">
+              <CircularProgress color="primary" />
+            </Box>
+          ) : data.isPresent ? (
+            <div>
+              <div style={{ margin: '1rem 0' }}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  size="large"
+                  onClick={() => {
+                    setData({ ...data, isPresent: false });
+
+                    setPlay(true);
+                  }}
+                >
+                  Back
+                </Button>
+              </div>
+
+              {data.isError ? (
+                <div>
+                  <Typography variant="h1" fontWeight={500}>
+                    Error
+                  </Typography>
+                  <Typography variant="p" color="secondary">
+                    {data.value.stderr}
+                  </Typography>
+                </div>
+              ) : (
+                <div>
+                  <Typography variant="h1" fontWeight={500}>
+                    {statusOfCode ? 'Failure' : 'Success'}
+                  </Typography>
+                  <Typography variant="p" color="Primary">
+                    {data.value.stdout
+                      .substr(1, data.value.stdout.length - 2)
+                      .split(',')
+                      .map(Number)
+                      .map((testCase, i) => {
+                        if (testCase === 1) {
+                          return (
+                            <Grid variant="span" color="success">
+                              ✅Test Case {i + 1} PASS
+                            </Grid>
+                          );
+                        } else {
+                          return (
+                            <Grid variant="span" color="secondary">
+                              ❌Test Case {i + 1} FAILED
+                            </Grid>
+                          );
+                        }
+                      })}
+                  </Typography>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Editor
+              language={lang}
+              theme="vs-dark"
+              defaultLanguage="python"
+              // defaultValue=`def ${functionName}`
+              defaultValue={`def ${functionName}`}
+              width="97%"
+              onChange={(value) => {
+                setUserCode(value);
+              }}
+            />
+          )}
 
           {/* <Grid item xs={12} sx={{marginLeft:"-2vh"}}>
                         <Grid container>

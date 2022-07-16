@@ -66,11 +66,13 @@ export default function JoinRoomModal() {
 
   const handleStart = () => {
     socket.emit('start_game', { roomId });
+    console.log('CLICKED');
 
     socket.on('gameQuestions', (questions) => {
       console.log('x', questions);
-      dispatch(gameQuestions(questions));
+      // dispatch(gameQuestions(questions));
     });
+    // navigate('/codeEditor');
   };
 
   return (

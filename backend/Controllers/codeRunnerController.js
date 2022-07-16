@@ -26,6 +26,7 @@ const runCodePy = async (req, res) => {
   const client = piston({});
 
   const { pycode, functionName } = req.body;
+  console.log('HI FROM CODE RUNNER', pycode, functionName);
 
   const runtimes = await client.runtimes();
   // [{ language: 'python', version: '3.9.4', aliases: ['py'] }, ...]

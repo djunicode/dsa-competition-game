@@ -57,6 +57,7 @@ const gameEvents = (socket, io, redisClient) => {
         -1
       );
       const arrayOfUser = allUsers.map(JSON.parse);
+      console.log(arrayOfUser);
       for (let i = 0; i < arrayOfUser.length; i++) {
         await redisClient.set(
           arrayOfUser[i].userId + 'CurrentlyIn',

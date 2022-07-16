@@ -27,7 +27,7 @@ const roomEvents = (socket, io, redisClient) => {
     socket.data = { roomId: roomId };
   });
 
-  // expecting {playerLimit: 10,userId: '62710f48fee2c40536fc062a',difficulty: 'Easy',rounds: 6,timeLimitPerQ: 10,additionalInfo: 'Be good in chatRoom'}
+  // expecting {playerLimit: 10,userId: '62710f48fee2c40536fc062a',difficulty: 'easy',rounds: 6,timeLimitPerQ: 10,additionalInfo: 'Be good in chatRoom'}
   socket.on('create_room_info', async (data, req) => {
     console.log(socket.data);
     const userInfo = await User.findById(data.userId._id);
