@@ -1,49 +1,53 @@
 import piston from 'piston-client';
+import problemStatement from '../Model/problemStatements.js';
 
 // Fetch the test cases of the particular problem from the db
 // According to the req.params.problemCode
-const testCases = `1 2
-3
-34 3
-37
-10 30
-40
-50 40
-90
-1000 9999
-10999
-444 600
-1044
-5000 10000
-15000
-1000000 5000000
-6000000`;
+const testCases = `1 2\n3\n34 3\n37\n10 30\n40\n50 40\n90\n1000 9999\n10999\n444 600\n1044\n5000 10000\n15000\n1000000 5000000\n6000000\n`;
 const testNum = 8;
 
 const runCodePy = async (req, res) => {
+  let problem;
+  try {
+    // const problemID = req.params._id;
+    const problemId = req.params.problemId;
+    problem = await problemStatement.findById(problemId);
+    if (problem === null) {
+      throw new Error("Couldn't find the given id");
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+    return;
+  }
+  console.log(problem);
   const client = piston({});
 
   const { pycode, functionName } = req.body;
+  console.log('HI FROM CODE RUNNER', pycode, functionName);
 
   const runtimes = await client.runtimes();
   // [{ language: 'python', version: '3.9.4', aliases: ['py'] }, ...]
 
   const result = await client.execute(
     'python',
-    `tc = """${testCases}"""
+    `tc = """${problem.testcases}"""
 dtc = [int(s) for s in tc.split() if s.isdigit()]
 
 
 ${pycode}
 
 
-t = ${testNum}
+t = ${problem.testcaseNum}
+testCasesValidation = []
 for i in range(t):
     if(${functionName}(dtc[3*i], dtc[3*i+1]) == dtc[3*i+2]):
-        print(i+1, "Pass")
+        testCasesValidation.append(1)
     else:
-        print("FAILED AT TESTCASE", (i+1))
-        break
+        testCasesValidation.append(0)
+print(testCasesValidation, end="")
 `
   );
   // { language: 'python', version: '3.9.4', run: {

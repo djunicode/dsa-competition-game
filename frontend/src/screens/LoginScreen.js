@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -88,12 +88,7 @@ function LoginScreen() {
   console.log(`touchedFields: ${touchedFields.username}`);
 
   const onSubmit = (data) =>
-    dispatch(
-      login(
-        getValues('email'),
-        getValues('password'),
-      ),
-    );
+    dispatch(login(getValues('email'), getValues('password')));
 
   useEffect(() => {
     if (error) {
@@ -134,7 +129,7 @@ function LoginScreen() {
             backgroundColor: 'rgb(255, 255, 255, 0.1)',
             borderRadius: '7px',
             width: matchesM ? '40rem' : matchesS ? '40rem' : '45%',
-            height: matchesM ? '30rem' : matchesS? '30rem' : '20rem',
+            height: matchesM ? '30rem' : matchesS ? '30rem' : '20rem',
             textAlign: 'center',
             backdropFilter: 'blur(57.4px)',
             paddingBottom: matchesM ? '0.3' : '0.8rem',

@@ -7,6 +7,7 @@ const listAllProblems = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'Heres the list of all the Problems',
+      numberOfProblems: list.length,
       list,
     });
   } catch (error) {
@@ -20,7 +21,7 @@ const listAllProblems = async (req, res) => {
 // call the problem by id
 const problemByID = async (req, res) => {
   try {
-    const problemID = req.body.problemID;
+    const problemID = req.params._id;
     const showProblem = await problemStatement.findById(problemID);
     res.status(200).json({
       success: true,
@@ -58,7 +59,7 @@ const addProblem = async (req, res) => {
 // Updating a problem by its ID
 const updateProblem = async (req, res) => {
   try {
-    const problemID = req.body.problemID;
+    const problemID = req.params._id;
     const updateData = {
       ...req.body,
     };
@@ -90,11 +91,35 @@ const updateProblem = async (req, res) => {
 //Deleting a problem by its ID
 const removeProblem = async (req, res) => {
   try {
-    const problemID = req.body.problemID;
-    await problemStatement.findByIdAndDelete(problemID);
+    const problemID = req.params._id;
+    const result = await problemStatement.findByIdAndDelete(problemID);
+    console.log(result);
+    if (result === null) {
+      throw new Error("Couldn't find the given id");
+    }
     res.status(200).json({
       success: true,
       message: 'Problem removed successfully',
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Delete all problem statements
+const deleteAllProblems = async (req, res) => {
+  try {
+    const result = await problemStatement.deleteMany({});
+    console.log(result);
+    if (result.deletedCount === 0) {
+      throw new Error('No problems to delete');
+    }
+    res.status(200).json({
+      success: true,
+      message: 'All problem statements deleted',
     });
   } catch (error) {
     res.status(400).json({
@@ -110,4 +135,5 @@ export {
   addProblem,
   updateProblem,
   removeProblem,
+  deleteAllProblems,
 };

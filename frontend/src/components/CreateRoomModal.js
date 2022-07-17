@@ -306,11 +306,9 @@ export default function CreateRoomModal() {
                         }}
                         {...field}
                       >
-                        <MenuItem value="Easy">Easy</MenuItem>
-                        <MenuItem value="Intermediate">
-                          Intermediate
-                        </MenuItem>
-                        <MenuItem value="Hard">Hard</MenuItem>
+                        <MenuItem value="easy">Easy</MenuItem>
+                        <MenuItem value="medium">Medium</MenuItem>
+                        <MenuItem value="hard">Hard</MenuItem>
                       </Select>
                     )}
                   />

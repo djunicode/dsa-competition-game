@@ -7,23 +7,33 @@ import CloseIcon from '@mui/icons-material/Close';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import { BsPersonCircle } from 'react-icons/bs';
-import { FaChevronRight } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
+import copy from 'copy-to-clipboard';
+import { MdContentCopy, MdPeopleAlt } from 'react-icons/md';
 import { joinRoom, roomInfo } from '../actions/roomAction';
+import { gameQuestions } from '../actions/gameActions';
 
 const socket = io.connect('http://localhost:5000/');
 
 export default function JoinRoomModal() {
-  const open = useSelector((state) => state.joinRoom);
-  const roomId = useSelector((state) => state.joinRoomCode);
-  const room = useSelector((state) => state.roomInfo);
-  const admin = useSelector((state) => state.admin);
+  // const open = useSelector((state) => state.joinRoom);
+  // const roomId = useSelector((state) => state.joinRoomCode);
+  // const room = useSelector((state) => state.roomInfo);
+  // const difficultyLevel = useSelector((state))
+  // const admin = useSelector((state) => state.admin);
+  const store = useSelector((state) => state);
+  const {
+    joinRoom: open,
+    joinRoomCode: roomId,
+    roomInfo: room,
+    admin,
+    userInfo: user,
+  } = store;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.userInfo);
+  // const user = useSelector((state) => state.userInfo);
   const { _id } = user;
 
   useEffect(() => {
@@ -50,6 +60,21 @@ export default function JoinRoomModal() {
     dispatch(joinRoom(false));
   };
 
+  const copyToClipboard = () => {
+    copy(roomId);
+  };
+
+  const handleStart = () => {
+    socket.emit('start_game', { roomId });
+    console.log('CLICKED');
+
+    socket.on('gameQuestions', (questions) => {
+      console.log('x', questions);
+      // dispatch(gameQuestions(questions));
+    });
+    // navigate('/codeEditor');
+  };
+
   return (
     <Dialog
       open={open}
@@ -68,6 +93,58 @@ export default function JoinRoomModal() {
       maxWidth="sm"
     >
       <Box>
+        <Box
+          sx={{
+            marginY: '25px',
+            marginLeft: '35px',
+            position: 'relative',
+          }}
+        >
+          <Typography
+            variant="h6"
+            component="h2"
+            sx={{
+              display: 'flex',
+              height: '35px',
+              width: '88%',
+              borderRadius: '7px',
+              backgroundColor: '#C4C2F5',
+              border: '2.5px solid #8985F2',
+              color: '#000',
+              fontSize: '14.5px',
+              paddingLeft: '12px',
+              paddingTop: '4px',
+              boxSizing: 'border-box',
+            }}
+          >
+            {roomId}
+            <Box
+              sx={{
+                display: 'flex',
+                position: 'absolute',
+                right: '78px',
+                bottom: '3px',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <IconButton size="small" onClick={copyToClipboard}>
+                <MdContentCopy />
+              </IconButton>
+            </Box>
+          </Typography>
+          {/* <IconButton
+            sx={{
+              display: 'flex',
+              position: 'absolute',
+              right: '18px',
+              bottom: '-8px',
+            }}
+            onClick={handleCancel}
+          >
+            <CloseIcon fontSize="large" />
+          </IconButton> */}
+        </Box>
         <Typography
           variant="body1"
           component="text"
@@ -86,7 +163,7 @@ export default function JoinRoomModal() {
             display: 'flex',
             position: 'absolute',
             right: '18px',
-            top: '8px',
+            top: '17px',
           }}
           onClick={handleCancel}
         >
@@ -133,7 +210,7 @@ export default function JoinRoomModal() {
                   fontSize: '20px',
                 }}
               >
-                Difficulty: Intermediate
+                Difficulty: {room.difficultyLevel}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -245,7 +322,7 @@ export default function JoinRoomModal() {
                 marginRight: '15px',
                 borderRadius: '5px',
               }}
-              onClick={() => navigate('/codeEditor')}
+              onClick={handleStart}
             >
               Start
             </Button>

@@ -2,7 +2,9 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import userRegisterReducer, { userLoginReducer } from './reducers/userReducers';
+import userRegisterReducer, {
+  userLoginReducer,
+} from './reducers/userReducers';
 import userInfo from './reducers/userInfoReducer';
 import {
   createRoom,
@@ -11,6 +13,7 @@ import {
   joinRoomCode,
   admin,
 } from './reducers/roomReducer';
+import { gameInfo } from './reducers/gameReducer';
 
 const reducer = combineReducers({
   userRegister: userRegisterReducer,
@@ -21,6 +24,7 @@ const reducer = combineReducers({
   roomInfo,
   joinRoomCode,
   admin,
+  gameInfo,
 });
 
 // const userInfoFromStorage = localStorage.getItem('userInfo')
