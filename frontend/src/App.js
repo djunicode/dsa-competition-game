@@ -61,7 +61,7 @@ function App() {
                     <Link to="/login">Login page</Link>
                   </div>
                   <div>
-                    <Link to="/leadeboard">Login page</Link>
+                    <Link to="/leaderboard">Leaderboard</Link>
                   </div>
                 </>
               }
@@ -79,7 +79,7 @@ function App() {
             />
             <Route path="codeEditor" element={<TextEditor />} />
             <Route path="login" element={<LoginScreen />} />
-            <Route path="leaderboard" element={<Leaderboard />} />
+            <Route path="leaderboard" element={<LeaderBoard />} />
             {/* <Route
               path="joinRoom"
               element={

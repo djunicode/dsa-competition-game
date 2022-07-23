@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Typography, Card, Avatar } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Leaderboard from '../images/leaderboard.png';
+import Background from '../images/background.jpg';
 
 export default function LeaderBoard() {
   const Demo = [
@@ -30,7 +30,7 @@ export default function LeaderBoard() {
     outerGrid: {
       width: '100vw',
       height: '100vh',
-      backgroundImage: `url(${Leaderboard})`,
+      backgroundImage: `url(${Background})`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
